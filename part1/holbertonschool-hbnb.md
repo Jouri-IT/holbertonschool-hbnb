@@ -326,11 +326,3 @@ sequenceDiagram
 ```
 
 **Figure 6 — Sequence diagram for the Fetching a List of Places API call.**
-
----
-
-## 5. Conclusion
-
-That covers the design for Part 1: a package diagram for the three-layer architecture and how the facade ties them together, a class diagram for the Business Logic entities and how they relate, and four sequence diagrams tracing real API calls end-to-end through all three layers.
-
-This should be enough to start building from in Part 2 (the API itself) and Part 3 (hooking up a real database), without having to make architectural decisions on the fly.
