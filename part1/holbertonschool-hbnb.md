@@ -22,7 +22,6 @@ Repository: `holbertonschool-hbnb` — Directory: `part1`
    - [4.2 Place Creation](#42-place-creation)
    - [4.3 Review Submission](#43-review-submission)
    - [4.4 Fetching a List of Places](#44-fetching-a-list-of-places)
-5. [Conclusion](#5-conclusion)
 
 ---
 
