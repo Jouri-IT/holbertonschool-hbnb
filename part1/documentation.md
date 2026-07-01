@@ -128,65 +128,56 @@ This layer is built around four entities: **User**, **Place**, **Review**, and *
 
 ```mermaid
 classDiagram
+direction TB
     class User {
-        +UUID id
-        -String first_name
-        -String last_name
-        -String email
-        -String password
-        -Boolean is_admin
-        -DateTime created_at
-        -DateTime updated_at
-        +register()
-        +update_profile(data)
-        +delete()
-    }
-
-    class Place {
-        +UUID id
-        -String title
-        -String description
-        -Float price
-        -Float latitude
-        -Float longitude
-        -DateTime created_at
-        -DateTime updated_at
-        +create()
-        +update(data)
-        +delete()
-        +list()
-        +add_amenity(amenity)
-        +remove_amenity(amenity)
+	    - first_name : String
+	    - last_name : String
+	    - email : String
+	    - password : String
+	    - is_admin : Boolean
+	    
     }
 
     class Review {
-        +UUID id
-        -Integer rating
-        -String comment
-        -DateTime created_at
-        -DateTime updated_at
-        +create()
-        +update(data)
-        +delete()
-        +list_by_place(place_id)
+	    - rating : Integer
+	    - comment : String
+	    - user_id : String
+	    - place_id : String
+	    + list_by_place()
+    }
+
+    class BaseModel {
+	    + id : UUID
+	    + created_at : DateTime
+	    + updated_at : DateTime
+	    + create()
+	    + update()
+	    + delete()
     }
 
     class Amenity {
-        +UUID id
-        -String name
-        -String description
-        -DateTime created_at
-        -DateTime updated_at
-        +create()
-        +update(data)
-        +delete()
-        +list()
+	    - name : String
+	    - description : String
+	    + list_amenities()
     }
 
+    class Place {
+	    - title : String
+	    - description : String
+	    - price : Float
+	    - latitude : Float
+	    - longitude : Float
+	    + list_by_place()
+    }
+
+    BaseModel <|-- User
+    BaseModel <|-- Place
+    BaseModel <|-- Review
+    BaseModel <|-- Amenity
     User "1" --> "0..*" Place : owns
     User "1" --> "0..*" Review : writes
-    Place "1" --> "0..*" Review : receives
-    Place "0..*" -- "0..*" Amenity : has
+    Place "1..*" --> "0..*" Amenity : has
+    Review "0..*" --> "1" Place : belongs to
 ```
 
 **Figure 2 — Detailed class diagram** for the Business Logic layer: User, Place, Review, and Amenity, with their attributes, methods, and relationships.
