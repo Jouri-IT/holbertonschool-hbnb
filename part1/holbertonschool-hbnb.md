@@ -25,9 +25,7 @@
 
 ## 1. Introduction
 
-This is the technical design for Part 1 of HBnB Evolution — a simplified AirBnB-style platform. Users can register, list properties ("places"), leave reviews on places they've stayed at, and attach amenities to listings.
-
-The goal here is to lay out the architecture before any code gets written, so Parts 2 (API) and 3 (persistence) build on a design that's already been thought through rather than improvised along the way.
+This is the technical design for Part 1 of HBnB Evolution, a simplified, Airbnb-style platform. It allows users to register, list properties ("places"), leave reviews on places they have stayed, and attach amenities to listings. The goal of this document is to lay out the architecture before any code is written.
 
 The system is covered from three angles:
 
