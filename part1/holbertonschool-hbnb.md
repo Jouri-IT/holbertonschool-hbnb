@@ -2,8 +2,6 @@
 
 **High-Level Architecture, Business Logic Design, and API Interaction Flows**
 
-Repository: `holbertonschool-hbnb` — Directory: `part1`
-
 ---
 
 ## Table of Contents
