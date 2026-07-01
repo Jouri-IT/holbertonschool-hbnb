@@ -221,10 +221,9 @@ A feature a place can offer — Wi-Fi, parking, a pool, whatever. Just a name an
 All four entities also carry the same base fields — a UUID4 `id` and `created_at` / `updated_at` timestamps — so every record can be uniquely identified and traced over time.
 
 ---
-
 ## 4. API Interaction Flow
 
-This section walks through four representative API calls and how a request moves through the system: client → Presentation Layer → `HBnBFacade` → Business Logic Layer → Persistence Layer, and back. The Presentation Layer only ever talks to the facade, same as described in Section 2.
+This section walks through four representative API calls and how a request moves through the system: client → Presentation Layer → `HBnBFacade` → Business Logic Layer → Persistence Layer, and back. The Presentation Layer only ever talks to the facade, as described in Section 2.
 
 ### 4.1 User Registration
 
@@ -251,6 +250,21 @@ sequenceDiagram
 
 **Figure 3 — Sequence diagram for the User Registration API call.**
 
+#### API Call Description
+
+This API call creates a new user account by validating the submitted information, generating a unique identifier, storing the new user in the database, and returning a successful creation response. The purpose of this sequence diagram is to illustrate how the Presentation, Business Logic, and Persistence layers collaborate to process a user registration request while maintaining separation of concerns.
+
+#### Flow of Interactions
+
+1. The client sends a `POST /users` request to the Presentation Layer.
+2. The Presentation Layer forwards the request to the `HBnBFacade`.
+3. The facade invokes the `User` model to validate the data and create a new `User` object.
+4. The `UserRepository` stores the new user in the database.
+5. A confirmation is returned through the facade and Presentation Layer.
+6. The client receives a **201 Created** response containing the new user information.
+
+---
+
 ### 4.2 Place Creation
 
 The client sends place details, including who owns it. The facade passes this to the `Place` model, which validates and creates a new `Place` object. The facade saves it via `PlaceRepository` and sends a confirmation back.
@@ -275,6 +289,21 @@ sequenceDiagram
 ```
 
 **Figure 4 — Sequence diagram for the Place Creation API call.**
+
+#### API Call Description
+
+This API call creates a new place listing for an existing user. It validates the provided information, creates a `Place` object, stores it in the database, and returns the newly created resource. The purpose of this sequence diagram is to demonstrate how the application's layered architecture processes a place creation request from start to finish.
+
+#### Flow of Interactions
+
+1. The client sends a `POST /places` request.
+2. The Presentation Layer forwards the request to the `HBnBFacade`.
+3. The facade calls the `Place` model to validate the owner and create a new `Place` object.
+4. The `PlaceRepository` persists the object in the database.
+5. The repository returns a confirmation to the facade.
+6. The Presentation Layer returns a **201 Created** response to the client.
+
+---
 
 ### 4.3 Review Submission
 
@@ -301,6 +330,21 @@ sequenceDiagram
 
 **Figure 5 — Sequence diagram for the Review Submission API call.**
 
+#### API Call Description
+
+This API call allows a user to submit a review for a specific place. Before storing the review, the system validates that both the user and the place exist. The purpose of this sequence diagram is to show how validation, business logic, and data persistence interact to process a review submission.
+
+#### Flow of Interactions
+
+1. The client submits a review through the API.
+2. The Presentation Layer forwards the request to the `HBnBFacade`.
+3. The facade delegates validation to the `Review` model.
+4. After successful validation, the `ReviewRepository` stores the review.
+5. The repository returns confirmation to the facade.
+6. The client receives a **201 Created** response containing the newly created review.
+
+---
+
 ### 4.4 Fetching a List of Places
 
 The client requests places, optionally with filters (price range, location, etc.). The facade passes the filters to the `Place` model to apply any business rules, then queries `PlaceRepository`. The resulting list flows back through the facade, the API, and finally to the client.
@@ -325,3 +369,16 @@ sequenceDiagram
 ```
 
 **Figure 6 — Sequence diagram for the Fetching a List of Places API call.**
+
+#### API Call Description
+
+This API call retrieves a list of places that match optional filtering criteria supplied by the client. The filters are validated before querying the database. The purpose of this sequence diagram is to illustrate the complete request-response flow through each architectural layer during a read operation.
+
+#### Flow of Interactions
+
+1. The client sends a `GET /places` request with optional filters.
+2. The Presentation Layer forwards the request to the `HBnBFacade`.
+3. The facade asks the `Place` model to validate the filtering parameters.
+4. The `PlaceRepository` queries the database using the validated filters.
+5. The matching place records are returned to the facade.
+6. The Presentation Layer sends a **200 OK** response containing the list of places back to the client.
