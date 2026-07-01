@@ -1,8 +1,8 @@
-## API Interaction Flow
+## 4. API Interaction Flow
 
 This section walks through four representative API calls and how a request moves through the system: client → Presentation Layer → `HBnBFacade` → Business Logic Layer → Persistence Layer, and back. The Presentation Layer only ever talks to the facade, as described in Section 2.
 
-### User Registration
+### 4.1 User Registration
 
 The client sends new user details to the API. The facade hands the data to the `User` model to validate and instantiate; once a `User` object exists with a fresh UUID, the facade tells `UserRepository` to save it. Confirmation flows back up through the facade and API to the client.
 
