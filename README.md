@@ -32,5 +32,5 @@ holbertonschool-hbnb/
 ## Authors
 
 - Razan Kashr
-- Jouri
-- Reema 
+- Jouri AlSulaiman
+- Reema Almujalli 
