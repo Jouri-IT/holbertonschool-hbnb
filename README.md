@@ -49,11 +49,13 @@ This project includes:
 ## Repository Structure
 
 ```
-part1/
+.
 ├── README.md
-├── documentation.md
-├── High_Level_Package_Diagram.md
-└── apis.md
+└── part1/
+    ├── Class_Diagram.md
+    ├── High_Level_Package_Diagram.md
+    ├── apis.md
+    └── documentation.md
 ```
 
 ---
