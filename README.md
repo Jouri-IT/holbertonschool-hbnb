@@ -69,4 +69,3 @@ part1/
 ## Goal
 
 The final documentation provides a clear blueprint of the HBnB Evolution architecture, illustrating the system components, their responsibilities, and the interactions between the different application layers before implementation.
-```
