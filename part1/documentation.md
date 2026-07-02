@@ -185,16 +185,16 @@ direction TB
 ### 3.2 Entity Descriptions
 
 **User**
-A registered account on the platform — first name, last name, email, password, plus an `is_admin` flag to tell regular users apart from admins. Users can register, update their own profile, and be deleted. One user can own several places and write several reviews.
+A registered account on the platform — first name, last name, email, password, plus an `is_admin` flag to tell regular users apart from admins. Users inherit core lifecycle actions from BaseModel One user can own several places and write several reviews.
 
 **Place**
-A property listing created by a user — title, description, price, latitude, longitude. Every place has exactly one owner. Places support the usual create/update/delete/list operations, can have any number of amenities attached, and can receive any number of reviews.
+A property listing created by a user — title, description, price, latitude, longitude. Every place has exactly one owner. Places support core lifecycle actions alongside a specific list_by_place() method, can have any number of amenities attached, and can receive any number of reviews.
 
 **Review**
-Feedback a user leaves on a place they've stayed at — a rating and a comment. Every review points to exactly one place and one user. Reviews can be created, updated, deleted, and listed per place.
+Feedback a user leaves on a place they've stayed at — a rating and a comment. Every review points to exactly one place (place_id) and one user (user_id). Reviews can be created, updated, deleted, and listed per place via list_by_place().
 
 **Amenity**
-A feature a place can offer — Wi-Fi, parking, a pool, whatever. Just a name and a description. Amenities exist independently of any specific place and support their own create/update/delete/list operations.
+A feature a place can offer — Wi-Fi, parking, a pool, whatever. Just a name and a description. Amenities support core lifecycle actions and can be listed via list_amenities().
 
 ### 3.3 Relationships
 
@@ -202,10 +202,10 @@ A feature a place can offer — Wi-Fi, parking, a pool, whatever. Just a name an
 |---|---|---|---|
 | User → Place | 1 to 0..* | Association | A User owns zero or more Places; each Place has exactly one owner. |
 | User → Review | 1 to 0..* | Association | A User writes zero or more Reviews; each Review has exactly one author. |
-| Place → Review | 1 to 0..* | Association | A Place receives zero or more Reviews; each Review refers to exactly one Place. |
+| Review → Place | 0..* to 1 | Association | A Review belongs to exactly one Place; a Place can receive zero or more Reviews. |
 | Place ↔ Amenity | 0..* to 0..* | Association | A Place can have many Amenities, and an Amenity can be associated with many Places. |
 
-All four entities also carry the same base fields — a UUID4 `id` and `created_at` / `updated_at` timestamps — so every record can be uniquely identified and traced over time.
+All four entities inherit from BaseModel and carry the same base fields - a UUID id, created_at, and updated_at timestamps - alongside standard lifecycle methods ( create(), update(), delete() ) so every record can be uniquely managed and traced over time.
 
 ---
 ## 4. API Interaction Flow
