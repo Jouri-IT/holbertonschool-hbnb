@@ -203,7 +203,7 @@ A feature a place can offer — Wi-Fi, parking, a pool, whatever. Just a name an
 | User → Place | 1 to 0..* | Association | A User owns zero or more Places; each Place has exactly one owner. |
 | User → Review | 1 to 0..* | Association | A User writes zero or more Reviews; each Review has exactly one author. |
 | Review → Place | 0..* to 1 | Association | A Review belongs to exactly one Place; a Place can receive zero or more Reviews. |
-| Place ↔ Amenity | 0..* to 0..* | Association | A Place can have many Amenities, and an Amenity can be associated with many Places. |
+| Place → Amenity | 0..* to 0..* | Association | A Place can have many Amenities, and an Amenity can be associated with many Places. |
 
 All four entities inherit from BaseModel and carry the same base fields - a UUID id, created_at, and updated_at timestamps - alongside standard lifecycle methods ( create(), update(), delete() ) so every record can be uniquely managed and traced over time.
 
