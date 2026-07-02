@@ -1,41 +1,72 @@
 # HBnB Evolution Phase 1: UML Design
 
-## Project Overview
+## Overview
 
-This project is a simplified, full-stack clone of the Airbnb platform developed as part of the Holberton School curriculum. The first phase focuses entirely on initial architecture, technical design, and system blueprinting using UML specifications. The application uses a Three-Layer Architecture (Presentation, Business Logic, and Persistence) to ensure consistency.
+This project focuses on designing the technical documentation for the HBnB Evolution application before implementation begins.
 
-## Featured Diagrams
+The objective is to model the system architecture using UML diagrams and document the relationships, components, and interactions that define the application's structure. This documentation serves as the foundation for the following development phases.
 
-- Package Diagram
-- Class Diagram
-- Sequence Diagrams
+---
 
-## Features
+## Project Scope
 
-- Command-line interface
-- Object creation and management
-- JSON serialization and deserialization
-- File storage
-- Object-oriented design
+The documentation covers the core entities and functionality of the application, including:
 
-## Technologies
+- User Management
+- Place Management
+- Review Management
+- Amenity Management
 
-- Python 3
-- OOP
+It also documents the layered architecture composed of:
+
+- Presentation Layer
+- Business Logic Layer
+- Persistence Layer
+
+Communication between these layers is represented using the Facade design pattern.
+
+---
+
+## Deliverables
+
+This project includes:
+
+- High-Level Package Diagram
+- Detailed Class Diagram
+- Sequence Diagrams for API Calls
+- Technical Documentation
+
+---
+
+## Tools
+
 - Mermaid.js
-- Git & GitHub
-- Linux
+- Markdown
+- UML Diagrams
+
+---
 
 ## Repository Structure
 
 ```
-holbertonschool-hbnb/
-├── part1/
-└── README.md
+part1/
+├── README.md
+├── documentation.md
+├── High_Level_Package_Diagram.md
+└── apis.md
 ```
 
-## Authors
+---
 
-- Razan Kashr
+## Team Members
+
+- Reema Almujalli
 - Jouri AlSulaiman
-- Reema Almujalli 
+- Razan Kashr
+
+---
+
+## Goal
+
+The final documentation provides a clear blueprint of the HBnB Evolution architecture, illustrating the system components, their responsibilities, and the interactions between the different application layers before implementation.
+```
