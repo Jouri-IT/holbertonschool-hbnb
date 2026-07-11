@@ -176,7 +176,7 @@ direction TB
     BaseModel <|-- Amenity
     User "1" --> "0..*" Place : owns
     User "1" --> "0..*" Review : writes
-    Place "1..*" --> "0..*" Amenity : has
+    Place "0..*" --> "0..*" Amenity : has
     Review "0..*" --> "1" Place : belongs to
 ```
 
