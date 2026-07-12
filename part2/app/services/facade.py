@@ -125,5 +125,52 @@ class HBnBFacade:
         return place
 
     # --- Review Operations ---
-    def submit
-
+    def submit_review(self, place_id, review_data):
+        """Submit a review for a place.
+        
+        Per Part 1 Fig 5: validates that both place and user exist before creating review.
+        """
+        # Fetch and validate the place and user exist
+        place = self.place_repo.get(place_id)
+        if not place:
+            raise ValueError("Place does not exist")
+        
+        user_id = review_data.get('user_id')
+        user = self.user_repo.get(user_id)
+        if not user:
+            raise ValueError("User does not exist")
+        
+        # Create review with the actual Place and User objects
+        review_data_copy = review_data.copy()
+        review_data_copy.pop('user_id', None)  # Remove since constructor takes user object
+        review_data_copy['user'] = user
+        review_data_copy['place'] = place
+        
+        review = Review(**review_data_copy)
+        self.review_repo.add(review)
+        return review
+
+    def get_review(self, review_id):
+        """Fetch a review by ID."""
+        return self.review_repo.get(review_id)
+
+    def get_all_reviews(self):
+        """Retrieve all reviews."""
+        return self.review_repo.get_all()
+
+    def list_reviews_by_place(self, place_id):
+        """List all reviews for a specific place."""
+        reviews = self.review_repo.get_all()
+        return [r for r in reviews if r.place_id == place_id]
+
+    def update_review(self, review_id, review_data):
+        """Update an existing review."""
+        review = self.review_repo.get(review_id)
+        if not review:
+            return None
+        review.update(review_data)
+        return review
+
+    def delete_review(self, review_id):
+        """Delete a review by ID."""
+        self.review_repo.delete(review_id)
