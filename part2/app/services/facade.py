@@ -19,14 +19,18 @@ class HBnBFacade:
 
     def get_user_by_email(self, email):
         return self.user_repo.get_by_attribute('email', email)
-    
+
+    def get_all_users(self):
+        """Retrieve every user. Needed for GET /api/v1/users/."""
+        return self.user_repo.get_all()
+
     def update_user(self, user_id, user_data):
         user = self.user_repo.get(user_id)
         if not user:
             return None
         user.update(user_data)
         return user
-    
+
     def get_place(self, place_id):
         # Implementation will be added in future tasks
         pass
