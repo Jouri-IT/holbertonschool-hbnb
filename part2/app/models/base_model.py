@@ -22,6 +22,7 @@ class BaseModel:
             if hasattr(self, key):
                 setattr(self, key, value)
         self.save()
+
     def to_dict(self):
-    """Return dictionary representation."""
-    return self.__dict__
+        """Return dictionary representation."""
+        return self.__dict__
