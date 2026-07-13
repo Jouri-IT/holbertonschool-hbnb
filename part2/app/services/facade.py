@@ -13,7 +13,7 @@ class HBnBFacade:
         self.amenity_repo = InMemoryRepository()
 
     # --- User Operations ---
-    def register_user(self, user_data):
+    def create_user(self, user_data):
         """Register a new user account."""
         user = User(**user_data)
         self.user_repo.add(user)
