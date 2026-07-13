@@ -11,7 +11,7 @@ class User(BaseModel):
     password, is_admin.
     """
 
-    def __init__(self, first_name, last_name, email, password,
+    def __init__(self, first_name, last_name, email, password=None,
                  is_admin=False):
         super().__init__()
 
@@ -42,10 +42,11 @@ class User(BaseModel):
         if not re.match(email_pattern, self.email):
             raise ValueError("Invalid email")
 
-        if not isinstance(self.password, str):
-            raise TypeError("password must be a string")
-        if len(self.password) < 6:
-            raise ValueError("password must be at least 6 characters")
+        if self.password is not None:
+            if not isinstance(self.password, str):
+                raise TypeError("password must be a string")
+            if len(self.password) < 6:
+                raise ValueError("password must be at least 6 characters")
 
         if not isinstance(self.is_admin, bool):
             raise TypeError("is_admin must be boolean")
