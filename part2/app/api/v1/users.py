@@ -5,13 +5,14 @@ from app.services import facade
 
 api = Namespace('users', description='User operations')
 
-# Input model for creating a user (POST). Password is required on
-# creation but is never part of any response body.
+# Input model for creating a user (POST). Password is optional here
+# since Part 2 registration doesn't require it (auth arrives in Part
+# 3); it's never part of any response body either way.
 user_creation_model = api.model('UserCreation', {
     'first_name': fields.String(required=True, description='First name of the user'),
     'last_name': fields.String(required=True, description='Last name of the user'),
     'email': fields.String(required=True, description='Email of the user'),
-    'password': fields.String(required=True, description='Password of the user'),
+    'password': fields.String(required=False, description='Password of the user'),
 })
 
 # Input model for updating a user (PUT). Password intentionally left
