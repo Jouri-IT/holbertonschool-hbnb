@@ -1,64 +1,92 @@
-# HBnB Evolution Phase 1: UML Design
+# HBnB Evolution Phase 2: Business Logic and API Implementation
 
 ## Overview
 
-This project focuses on designing the technical documentation for the HBnB Evolution application before implementation begins.
+This phase focuses on implementing the HBnB Evolution application based on the architecture designed in Phase 1.
 
-The objective is to model the system architecture using UML diagrams and document the relationships, components, and interactions that define the application's structure. This documentation serves as the foundation for the following development phases.
-
----
+The project establishes the application structure using a layered architecture and begins the implementation of the Business Logic, Presentation, and Persistence layers. It also introduces the Facade pattern to simplify communication between the different layers while keeping the code modular and maintainable.
 
 ## Project Scope
 
-The documentation covers the core entities and functionality of the application, including:
+The implementation includes the core components of the application:
 
 - User Management
 - Place Management
 - Review Management
 - Amenity Management
 
-It also documents the layered architecture composed of:
+The project is organized into the following layers:
 
-- Presentation Layer
+- Presentation Layer (Flask REST API)
 - Business Logic Layer
-- Persistence Layer
+- Persistence Layer (In-Memory Repository)
 
-Communication between these layers is represented using the Facade design pattern.
-
----
+Communication between these layers is managed through the **HBnBFacade**.
 
 ## Deliverables
 
 This project includes:
 
-- High-Level Package Diagram
-- Detailed Class Diagram
-- Sequence Diagrams for API Calls
+- Project Structure Initialization
+- Flask Application Setup
+- Facade Pattern Implementation
+- In-Memory Repository
+- Business Logic Models
+- REST API Endpoints
 - Technical Documentation
 
----
+## Technologies
 
-## Tools
-
-- Mermaid.js
-- Markdown
-- UML Diagrams
-
----
+- Python 3
+- Flask
+- Flask-RESTx
+- REST API
+- In-Memory Repository
+- Facade Design Pattern
 
 ## Repository Structure
 
-```
+```text
 .
 ├── README.md
-└── part1/
-    ├── Class_Diagram.md
-    ├── High_Level_Package_Diagram.md
-    ├── apis.md
-    └── documentation.md
+├── requirements.txt
+├── config.py
+├── run.py
+└── app/
+    ├── __init__.py
+    ├── api/
+    │   └── v1/
+    ├── models/
+    ├── services/
+    └── persistence/
 ```
 
----
+## Installation and Running the Application
+
+1. (Optional) Create and activate a virtual environment:
+
+   ```bash
+   python3 -m venv venv
+   source venv/bin/activate
+   ```
+
+2. Install the dependencies:
+
+   ```bash
+   pip install -r requirements.txt
+   ```
+
+3. Run the application:
+
+   ```bash
+   python run.py
+   ```
+
+4. The API and its interactive Swagger documentation will be available at:
+
+   ```text
+   http://127.0.0.1:5000/api/v1/
+   ```
 
 ## Team Members
 
@@ -66,8 +94,6 @@ This project includes:
 - Jouri AlSulaiman
 - Razan Kashr
 
----
-
 ## Goal
 
-The final documentation provides a clear blueprint of the HBnB Evolution architecture, illustrating the system components, their responsibilities, and the interactions between the different application layers before implementation.
+The goal of this phase is to transform the system design into a functional application by implementing the project structure, business logic, REST API foundation, and persistence layer, providing the foundation for future database integration and advanced application features.
