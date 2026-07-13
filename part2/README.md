@@ -61,6 +61,33 @@ This project includes:
     └── persistence/
 ```
 
+## Installation and Running the Application
+
+1. (Optional) Create and activate a virtual environment:
+
+   ```bash
+   python3 -m venv venv
+   source venv/bin/activate
+   ```
+
+2. Install the dependencies:
+
+   ```bash
+   pip install -r requirements.txt
+   ```
+
+3. Run the application:
+
+   ```bash
+   python run.py
+   ```
+
+4. The API and its interactive Swagger documentation will be available at:
+
+   ```text
+   http://127.0.0.1:5000/api/v1/
+   ```
+
 ## Team Members
 
 - Reema Almujalli
