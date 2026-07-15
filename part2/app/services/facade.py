@@ -79,12 +79,21 @@ class HBnBFacade:
         if not owner:
             raise ValueError("Owner user does not exist")
         
-        # Remove owner_id from data; Place constructor takes owner object
+        # Remove owner_id from data; Place constructor takes owner object, 
+        # amenities are attached after
         place_data_copy = place_data.copy()
         place_data_copy.pop('owner_id', None)
+        amenity_ids = place_data_copy.pop('amenities', [])
         place_data_copy['owner'] = owner
         
         place = Place(**place_data_copy)
+
+        for amenity_id in amenity_ids:
+            amenity = self.amenity_repo.get(amenity_id)
+            if not amenity:
+                raise ValueError(f"Amenity {amenity_id} does not exist")
+            place.add_amenity(amenity)
+
         self.place_repo.add(place)
         return place
 
