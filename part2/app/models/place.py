@@ -2,13 +2,14 @@
 
 from app.models.base_model import BaseModel
 from app.models.user import User
+from app.models.amenity import Amenity
 
 
 class Place(BaseModel):
     """Place model."""
 
-    def __init__(self, title, description, price,
-                 latitude, longitude, owner):
+    def __init__(self, title, price, latitude, longitude, owner,
+                 description=None):
         super().__init__()
 
         if not isinstance(owner, User):
@@ -66,10 +67,17 @@ class Place(BaseModel):
 
     def add_review(self, review):
         """Add review to place."""
+        # Imported locally to avoid a circular import: review.py
+        # already imports Place at module load time.
+        from app.models.review import Review
+        if not isinstance(review, Review):
+            raise TypeError("review must be a Review")
         self.reviews.append(review)
 
     def add_amenity(self, amenity):
         """Add amenity to place."""
+        if not isinstance(amenity, Amenity):
+            raise TypeError("amenity must be an Amenity")
         self.amenities.append(amenity)
 
     def to_dict(self):

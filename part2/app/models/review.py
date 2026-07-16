@@ -8,13 +8,17 @@ from app.models.place import Place
 class Review(BaseModel):
     """Review model.
 
-    Attributes per Part 1 design: rating, comment, user_id, place_id.
+    Attributes per Part 1 design: rating, text, user_id, place_id.
     The actual Place/User objects are required at construction time so
     they can be validated (they must already exist), but only their
     ids are stored as the persisted relationship attributes.
+
+    Registering the review with its place (place.add_review()) is the
+    caller's responsibility, not this constructor's -- callers that
+    already hold the place object are expected to link it explicitly.
     """
 
-    def __init__(self, comment, rating, place, user):
+    def __init__(self, text, rating, place, user):
         super().__init__()
 
         if not isinstance(place, Place):
@@ -22,24 +26,20 @@ class Review(BaseModel):
         if not isinstance(user, User):
             raise TypeError("user must be a User")
 
-        self.comment = comment
+        self.text = text
         self.rating = rating
         self.place_id = place.id
         self.user_id = user.id
 
         self.validate()
 
-        # Linking a Review to its Place, per the "seamless interactions"
-        # requirement -- creating a Review automatically registers it.
-        place.add_review(self)
-
     def validate(self):
         """Validate review attributes."""
 
-        if not isinstance(self.comment, str):
-            raise TypeError("comment must be a string")
-        if len(self.comment) == 0:
-            raise ValueError("comment cannot be empty")
+        if not isinstance(self.text, str):
+            raise TypeError("text must be a string")
+        if len(self.text) == 0:
+            raise ValueError("text cannot be empty")
 
         # bool is a subclass of int in Python, so this must be checked
         # explicitly or True/False would silently pass as 1/0.
