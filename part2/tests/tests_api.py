@@ -44,7 +44,8 @@ class TestHBnBAPI(unittest.TestCase):
             "title": "Cozy Apartment",
             "price": -10.0,
             "latitude": 45.0,
-            "longitude": -90.0
+            "longitude": -90.0,
+            "owner_id": "some-user-id"
         })
         self.assertEqual(response.status_code, 400)
 
@@ -53,7 +54,8 @@ class TestHBnBAPI(unittest.TestCase):
             "title": "Cozy Apartment",
             "price": 50.0,
             "latitude": 120.0,  # Out of range (-90 to 90)
-            "longitude": -90.0
+            "longitude": -90.0,
+            "owner_id": "some-user-id"
         })
         self.assertEqual(response.status_code, 400)
 
