@@ -47,8 +47,8 @@ class Place(BaseModel):
         if not isinstance(self.price, (int, float)) or \
                 isinstance(self.price, bool):
             raise TypeError("price must be a number")
-        if self.price <= 0:
-            raise ValueError("price must be positive")
+        if self.price < 0:
+            raise ValueError("price must be non-negative")
 
         if not isinstance(self.latitude, (int, float)) or \
                 isinstance(self.latitude, bool):
