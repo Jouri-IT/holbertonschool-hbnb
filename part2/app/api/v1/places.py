@@ -27,6 +27,14 @@ review_model = api.model('PlaceReview', {
 # Define the place model for input validation and documentation.
 # amenities is optional here -- the task's own creation example omits
 # it entirely, and facade.create_place already defaults it to [].
+#
+# owner/reviews are added per this task's instruction to "update the
+# Place model to include the collection of reviews" -- they're
+# documentation-only (not required=True, never expected as input):
+# actual place creation still takes owner_id + a flat list of amenity
+# IDs, not nested objects, since that's the contract Task 4's own
+# example and facade.create_place actually implement. Only the output
+# side (serialize_place) fills these in.
 place_model = api.model('Place', {
     'title': fields.String(required=True, description='Title of the place'),
     'description': fields.String(description='Description of the place'),
@@ -34,7 +42,9 @@ place_model = api.model('Place', {
     'latitude': fields.Float(required=True, description='Latitude of the place'),
     'longitude': fields.Float(required=True, description='Longitude of the place'),
     'owner_id': fields.String(required=True, description='ID of the owner'),
-    'amenities': fields.List(fields.String, required=False, description="List of amenities ID's")
+    'owner': fields.Nested(user_model, description='Owner of the place'),
+    'amenities': fields.List(fields.String, required=False, description="List of amenities ID's"),
+    'reviews': fields.List(fields.Nested(review_model), description='List of reviews'),
 })
 
 # Separate update model: every field optional (the task's PUT example
@@ -151,6 +161,9 @@ class PlaceReviewList(Resource):
         place = facade.get_place(place_id)
         if not place:
             return {'error': 'Place not found'}, 404
-        
-        reviews = facade.list_reviews_by_place(place_id)
-        return [r.to_dict() for r in reviews], 200
+
+        reviews = facade.get_reviews_by_place(place_id)
+        return [
+            {'id': r.id, 'text': r.text, 'rating': r.rating}
+            for r in reviews
+        ], 200
