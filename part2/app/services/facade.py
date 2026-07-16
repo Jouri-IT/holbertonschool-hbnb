@@ -182,27 +182,33 @@ class HBnBFacade:
         return place
 
     # --- Review Operations ---
-    def submit_review(self, place_id, review_data):
-        """Submit a review for a place.
-        
-        Per Part 1 Fig 5: validates that both place and user exist before creating review.
+    def create_review(self, review_data):
+        """Create a review for a place.
+
+        Takes a single review_data dict (matching the pattern used by
+        every other create_* method) -- place_id/user_id are read out
+        of it internally, not passed as separate arguments.
+
+        Validates that both the place and the user exist before
+        creating the review.
         """
-        # Fetch and validate the place and user exist
+        place_id = review_data.get('place_id')
         place = self.place_repo.get(place_id)
         if not place:
             raise ValueError("Place does not exist")
-        
+
         user_id = review_data.get('user_id')
         user = self.user_repo.get(user_id)
         if not user:
             raise ValueError("User does not exist")
-        
+
         # Create review with the actual Place and User objects
         review_data_copy = review_data.copy()
-        review_data_copy.pop('user_id', None)  # Remove since constructor takes user object
+        review_data_copy.pop('user_id', None)
+        review_data_copy.pop('place_id', None)
         review_data_copy['user'] = user
         review_data_copy['place'] = place
-        
+
         review = Review(**review_data_copy)
         self.review_repo.add(review)
         place.add_review(review)
@@ -216,19 +222,30 @@ class HBnBFacade:
         """Retrieve all reviews."""
         return self.review_repo.get_all()
 
-    def list_reviews_by_place(self, place_id):
+    def get_reviews_by_place(self, place_id):
         """List all reviews for a specific place."""
         reviews = self.review_repo.get_all()
         return [r for r in reviews if r.place_id == place_id]
 
     def update_review(self, review_id, review_data):
-        """Update an existing review."""
+        """Update an existing review.
+
+        Only text/rating are updatable through this endpoint -- place
+        and user are fixed at creation time, so place_id/user_id are
+        never passed to review.update() even if a client sends them.
+        """
         review = self.review_repo.get(review_id)
         if not review:
             return None
-        review.update(review_data)
+        allowed = {'text', 'rating'}
+        review.update({k: v for k, v in review_data.items() if k in allowed})
         return review
 
     def delete_review(self, review_id):
-        """Delete a review by ID."""
+        """Delete a review by ID, also unlinking it from its place."""
+        review = self.review_repo.get(review_id)
+        if review:
+            place = self.place_repo.get(review.place_id)
+            if place and review in place.reviews:
+                place.reviews.remove(review)
         self.review_repo.delete(review_id)
