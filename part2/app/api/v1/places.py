@@ -19,7 +19,7 @@ user_model = api.model('PlaceUser', {
 # Adding the review model
 review_model = api.model('PlaceReview', {
     'id': fields.String(description='Review ID'),
-    'comment': fields.String(description='Text of the review'),
+    'text': fields.String(description='Text of the review'),
     'rating': fields.Integer(description='Rating of the place (1-5)'),
     'user_id': fields.String(description='ID of the user')
 })
@@ -49,7 +49,7 @@ def serialize_place(place):
     data['reviews'] = [
         {
             'id': r.id,
-            'comment': r.comment,
+            'text': r.text,
             'rating': r.rating,
             'user_id': r.user_id,
         }
