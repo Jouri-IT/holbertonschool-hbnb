@@ -16,6 +16,14 @@ user_model = api.model('PlaceUser', {
     'email': fields.String(description='Email of the owner')
 })
 
+# Adding the review model
+review_model = api.model('PlaceReview', {
+    'id': fields.String(description='Review ID'),
+    'comment': fields.String(description='Text of the review'),
+    'rating': fields.Integer(description='Rating of the place (1-5)'),
+    'user_id': fields.String(description='ID of the user')
+})
+
 # Define the place model for input validation and documentation
 place_model = api.model('Place', {
     'title': fields.String(required=True, description='Title of the place'),
@@ -28,7 +36,7 @@ place_model = api.model('Place', {
 })
 
 def serialize_place(place):
-    data = place.to.dict()
+    data = place.to_dict()
     data['owner'] = {
         'id': place.owner.id,
         'first_name': place.owner.first_name,
@@ -37,6 +45,15 @@ def serialize_place(place):
     }
     data['amenities'] = [
         {'id': a.id, 'name' : a.name} for a in place.amenities
+    ]
+    data['reviews'] = [
+        {
+            'id': r.id,
+            'comment': r.comment,
+            'rating': r.rating,
+            'user_id': r.user_id,
+        }
+        for r in place.reviews
     ]
     return data
 
@@ -68,7 +85,7 @@ class PlaceResource(Resource):
         """Get place details by ID"""
         place = facade.get_place(place_id)
         if not place:
-            return {'error': 'Place not found'}, 400
+            return {'error': 'Place not found'}, 404
         return serialize_place(place), 200
     
     @api.expect(place_model, validate=True)
@@ -86,3 +103,16 @@ class PlaceResource(Resource):
         except (ValueError, TypeError) as e:
             return {'error': str(e)}, 400
         return {'message': 'Place updated successfully'}, 200
+    
+@api.route('/<place_id>/reviews')
+class PlaceReviewList(Resource):
+    @api.response(200, 'List of reviews for the place retrieved successfullly')
+    @api.response(404, 'Place not found')
+    def get(self, place_id):
+        """Get all reviews for a specific place"""
+        place = facade.get_place(place_id)
+        if not place:
+            return {'error': 'Place not found'}, 404
+        
+        reviews = facade.list_reviews_by_place(place_id)
+        return [r.to_dict() for r in reviews], 200
