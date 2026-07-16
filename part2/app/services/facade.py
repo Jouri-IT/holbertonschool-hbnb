@@ -14,8 +14,18 @@ class HBnBFacade:
 
     # --- User Operations ---
     def create_user(self, user_data):
-        """Register a new user account."""
-        user = User(**user_data)
+        """Register a new user account.
+
+        Only first_name/last_name/email are taken from user_data,
+        even though the model accepts more (e.g. is_admin) -- the
+        User endpoints never expose those, so nothing from the
+        request body should be able to set them.
+        """
+        user = User(
+            first_name=user_data.get('first_name'),
+            last_name=user_data.get('last_name'),
+            email=user_data.get('email'),
+        )
         self.user_repo.add(user)
         return user
 
@@ -32,11 +42,16 @@ class HBnBFacade:
         return self.user_repo.get_all()
 
     def update_user(self, user_id, user_data):
-        """Update an existing user's information."""
+        """Update an existing user's information.
+
+        Same whitelist as create_user -- only first_name/last_name/
+        email are updatable through this endpoint.
+        """
         user = self.user_repo.get(user_id)
         if not user:
             return None
-        user.update(user_data)
+        allowed = {'first_name', 'last_name', 'email'}
+        user.update({k: v for k, v in user_data.items() if k in allowed})
         return user
 
     # --- Amenity Operations ---
