@@ -24,7 +24,9 @@ review_model = api.model('PlaceReview', {
     'user_id': fields.String(description='ID of the user')
 })
 
-# Define the place model for input validation and documentation
+# Define the place model for input validation and documentation.
+# amenities is optional here -- the task's own creation example omits
+# it entirely, and facade.create_place already defaults it to [].
 place_model = api.model('Place', {
     'title': fields.String(required=True, description='Title of the place'),
     'description': fields.String(description='Description of the place'),
@@ -32,8 +34,44 @@ place_model = api.model('Place', {
     'latitude': fields.Float(required=True, description='Latitude of the place'),
     'longitude': fields.Float(required=True, description='Longitude of the place'),
     'owner_id': fields.String(required=True, description='ID of the owner'),
-    'amenities': fields.List(fields.String, required=True, description="List of amenities ID's")
+    'amenities': fields.List(fields.String, required=False, description="List of amenities ID's")
 })
+
+# Separate update model: every field optional (the task's PUT example
+# sends only title/description/price), and no owner_id -- ownership
+# isn't reassignable through this endpoint.
+place_update_model = api.model('PlaceUpdate', {
+    'title': fields.String(required=False, description='Title of the place'),
+    'description': fields.String(required=False, description='Description of the place'),
+    'price': fields.Float(required=False, description='Price per night'),
+    'latitude': fields.Float(required=False, description='Latitude of the place'),
+    'longitude': fields.Float(required=False, description='Longitude of the place'),
+    'amenities': fields.List(fields.String, required=False, description="List of amenities ID's"),
+})
+
+
+def place_summary(place):
+    """Minimal shape for the list endpoint, per the task's example."""
+    return {
+        'id': place.id,
+        'title': place.title,
+        'latitude': place.latitude,
+        'longitude': place.longitude,
+    }
+
+
+def place_created(place):
+    """Flat shape for the create response, per the task's example."""
+    return {
+        'id': place.id,
+        'title': place.title,
+        'description': place.description,
+        'price': place.price,
+        'latitude': place.latitude,
+        'longitude': place.longitude,
+        'owner_id': place.owner_id,
+    }
+
 
 def serialize_place(place):
     data = place.to_dict()
@@ -68,13 +106,13 @@ class PlaceList(Resource):
             new_place = facade.create_place(api.payload)
         except (ValueError, TypeError) as e:
             return {'error': str(e)}, 400
-        return serialize_place(new_place), 201
+        return place_created(new_place), 201
 
     @api.response(200, 'List of places retrieved successfully')
     def get(self):
         """Retrieve a list of all places"""
         places = facade.get_all_places()
-        return [serialize_place(p) for p in places], 200
+        return [place_summary(p) for p in places], 200
     
 
 @api.route('/<place_id>')
@@ -88,7 +126,7 @@ class PlaceResource(Resource):
             return {'error': 'Place not found'}, 404
         return serialize_place(place), 200
     
-    @api.expect(place_model, validate=True)
+    @api.expect(place_update_model, validate=True)
     @api.response(200, 'Place updated successfully')
     @api.response(404, 'Place not found')
     @api.response(400, 'Invalid input data')
