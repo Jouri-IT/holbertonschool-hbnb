@@ -4,41 +4,49 @@ import re
 from app.models.base_model import BaseModel
 from app import bcrypt
 
+
 class User(BaseModel):
     """User model.
 
-    Attributes per Part 1 design: first_name, last_name, email,
-    password, is_admin.
+    Attributes:
+        first_name
+        last_name
+        email
+        password
+        is_admin
     """
-    
-    def __init__(self, first_name, last_name, email, password, is_admin=False):
+
+    def __init__(self, first_name, last_name, email, password,
                  is_admin=False):
         super().__init__()
 
         self.first_name = first_name
         self.last_name = last_name
         self.email = email
+        self.is_admin = is_admin
 
         self.password = ""
         self.hash_password(password)
-        self.is_admin = is_admin
 
         self.validate()
 
-
     def hash_password(self, password):
-    """Hashes the password before storing it."""
-    self.password = bcrypt.generate_password_hash(
-        password
-    ).decode("utf-8")
+        """Hash the password before storing it."""
+        if not isinstance(password, str):
+            raise TypeError("password must be a string")
+        if len(password) < 6:
+            raise ValueError("password must be at least 6 characters")
 
+        self.password = bcrypt.generate_password_hash(
+            password
+        ).decode("utf-8")
 
     def verify_password(self, password):
-    """Verifies the password."""
-    return bcrypt.check_password_hash(
-        self.password,
-        password
-    )
+        """Verify the password."""
+        return bcrypt.check_password_hash(
+            self.password,
+            password
+        )
 
     def validate(self):
         """Validate user attributes."""
@@ -55,21 +63,16 @@ class User(BaseModel):
 
         if not isinstance(self.email, str):
             raise TypeError("email must be a string")
+
         email_pattern = r"^[^@]+@[^@]+\.[^@]+$"
         if not re.match(email_pattern, self.email):
             raise ValueError("Invalid email")
-
-        if self.password is not None:
-            if not isinstance(self.password, str):
-                raise TypeError("password must be a string")
-            if len(self.password) < 6:
-                raise ValueError("password must be at least 6 characters")
 
         if not isinstance(self.is_admin, bool):
             raise TypeError("is_admin must be boolean")
 
     def to_dict(self):
-        """Return dictionary representation, excluding the password."""
+        """Return dictionary representation without password."""
         data = super().to_dict()
         data.pop("password", None)
         return data
