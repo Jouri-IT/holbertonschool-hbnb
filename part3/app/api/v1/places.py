@@ -1,4 +1,5 @@
 from flask_restx import Namespace, Resource, fields
+from flask_jwt_extended import jwt_required, get_jwt_identity
 from app.services import facade
 
 api = Namespace('places', description='Place operations')
@@ -16,7 +17,6 @@ user_model = api.model('PlaceUser', {
     'email': fields.String(description='Email of the owner')
 })
 
-# Adding the review model
 review_model = api.model('PlaceReview', {
     'id': fields.String(description='Review ID'),
     'text': fields.String(description='Text of the review'),
@@ -24,17 +24,6 @@ review_model = api.model('PlaceReview', {
     'user_id': fields.String(description='ID of the user')
 })
 
-# Define the place model for input validation and documentation.
-# amenities is optional here -- the task's own creation example omits
-# it entirely, and facade.create_place already defaults it to [].
-#
-# owner/reviews are added per this task's instruction to "update the
-# Place model to include the collection of reviews" -- they're
-# documentation-only (not required=True, never expected as input):
-# actual place creation still takes owner_id + a flat list of amenity
-# IDs, not nested objects, since that's the contract Task 4's own
-# example and facade.create_place actually implement. Only the output
-# side (serialize_place) fills these in.
 place_model = api.model('Place', {
     'title': fields.String(required=True, description='Title of the place'),
     'description': fields.String(description='Description of the place'),
@@ -47,9 +36,6 @@ place_model = api.model('Place', {
     'reviews': fields.List(fields.Nested(review_model), description='List of reviews'),
 })
 
-# Separate update model: every field optional (the task's PUT example
-# sends only title/description/price), and no owner_id -- ownership
-# isn't reassignable through this endpoint.
 place_update_model = api.model('PlaceUpdate', {
     'title': fields.String(required=False, description='Title of the place'),
     'description': fields.String(required=False, description='Description of the place'),
@@ -61,7 +47,6 @@ place_update_model = api.model('PlaceUpdate', {
 
 
 def place_summary(place):
-    """Minimal shape for the list endpoint, per the task's example."""
     return {
         'id': place.id,
         'title': place.title,
@@ -71,7 +56,6 @@ def place_summary(place):
 
 
 def place_created(place):
-    """Flat shape for the create response, per the task's example."""
     return {
         'id': place.id,
         'title': place.title,
@@ -85,15 +69,22 @@ def place_created(place):
 
 def serialize_place(place):
     data = place.to_dict()
+
     data['owner'] = {
         'id': place.owner.id,
         'first_name': place.owner.first_name,
         'last_name': place.owner.last_name,
         'email': place.owner.email,
     }
+
     data['amenities'] = [
-        {'id': a.id, 'name' : a.name} for a in place.amenities
+        {
+            'id': a.id,
+            'name': a.name
+        }
+        for a in place.amenities
     ]
+
     data['reviews'] = [
         {
             'id': r.id,
@@ -103,67 +94,102 @@ def serialize_place(place):
         }
         for r in place.reviews
     ]
+
     return data
+
 
 @api.route('/')
 class PlaceList(Resource):
+
+    @jwt_required()
     @api.expect(place_model, validate=True)
     @api.response(201, 'Place successfully created')
     @api.response(400, 'Invalid input data')
     def post(self):
         """Register a new place"""
+
+        current_user = get_jwt_identity()
+
+        data = api.payload
+        data["owner_id"] = current_user
+
         try:
-            new_place = facade.create_place(api.payload)
+            new_place = facade.create_place(data)
         except (ValueError, TypeError) as e:
             return {'error': str(e)}, 400
+
         return place_created(new_place), 201
 
     @api.response(200, 'List of places retrieved successfully')
     def get(self):
         """Retrieve a list of all places"""
+
         places = facade.get_all_places()
+
         return [place_summary(p) for p in places], 200
-    
+
 
 @api.route('/<place_id>')
 class PlaceResource(Resource):
+
     @api.response(200, 'Place details retrieved successfully')
     @api.response(404, 'Place not found')
     def get(self, place_id):
         """Get place details by ID"""
+
         place = facade.get_place(place_id)
+
         if not place:
             return {'error': 'Place not found'}, 404
+
         return serialize_place(place), 200
-    
+
+    @jwt_required()
     @api.expect(place_update_model, validate=True)
     @api.response(200, 'Place updated successfully')
     @api.response(404, 'Place not found')
     @api.response(400, 'Invalid input data')
     def put(self, place_id):
         """Update a place's information"""
+
         place = facade.get_place(place_id)
+
         if not place:
             return {'error': 'Place not found'}, 404
-        
+
+        current_user = get_jwt_identity()
+
+        if place.owner_id != current_user:
+            return {"error": "Unauthorized action"}, 403
+
         try:
             facade.update_place(place_id, api.payload)
         except (ValueError, TypeError) as e:
             return {'error': str(e)}, 400
+
         return {'message': 'Place updated successfully'}, 200
-    
+
+
 @api.route('/<place_id>/reviews')
 class PlaceReviewList(Resource):
-    @api.response(200, 'List of reviews for the place retrieved successfullly')
+
+    @api.response(200, 'List of reviews for the place retrieved successfully')
     @api.response(404, 'Place not found')
     def get(self, place_id):
         """Get all reviews for a specific place"""
+
         place = facade.get_place(place_id)
+
         if not place:
             return {'error': 'Place not found'}, 404
 
         reviews = facade.get_reviews_by_place(place_id)
+
         return [
-            {'id': r.id, 'text': r.text, 'rating': r.rating}
+            {
+                'id': r.id,
+                'text': r.text,
+                'rating': r.rating
+            }
             for r in reviews
         ], 200
