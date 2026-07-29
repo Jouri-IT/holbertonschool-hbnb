@@ -202,6 +202,15 @@ class HBnBFacade:
         if not user:
             raise ValueError("User does not exist")
 
+        # Prevent users from reviewing their own place
+        if place.owner_id == user.id:
+            raise ValueError("You cannot review your own place")
+        
+        # Prevent duplicate reviews
+        for review in self.review_repo.get_all():
+            if review.user_id == user.id and review.place_id == place.id:
+                raise ValueError("You have already reviewed this place")
+
         # Create review with the actual Place and User objects
         review_data_copy = review_data.copy()
         review_data_copy.pop('user_id', None)

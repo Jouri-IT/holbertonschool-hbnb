@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 
 from flask_restx import Namespace, Resource, fields
+from flask_jwt_extended import jwt_required, get_jwt_identity
 from app.services import facade
 
 api = Namespace('users', description='User operations')
@@ -90,7 +91,7 @@ class UserResource(Resource):
             return {'error': 'User not found'}, 404
 
         return user_output(user), 200
-
+    @jwt_required()
     @api.expect(update_user_model, validate=True)
     @api.response(200, 'User successfully updated')
     @api.response(404, 'User not found')
