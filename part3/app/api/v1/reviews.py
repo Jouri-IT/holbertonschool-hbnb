@@ -73,15 +73,23 @@ class ReviewResource(Resource):
             return {'error': 'Review not found'}, 404
         return review_detail(review), 200
 
+    @jwt_required()
     @api.expect(review_update_model, validate=True)
     @api.response(200, 'Review updated successfully')
     @api.response(404, 'Review not found')
     @api.response(400, 'Invalid input data')
     def put(self, review_id):
         """Update a review's information"""
+
         review = facade.get_review(review_id)
+
         if not review:
             return {'error': 'Review not found'}, 404
+        current_user = get_jwt_identity()
+
+        if review.user_id != current_user:
+            return {'error': 'Unauthorized action'}, 403
+
         try:
             facade.update_review(review_id, api.payload)
         except (ValueError, TypeError) as e:
@@ -92,9 +100,17 @@ class ReviewResource(Resource):
     @api.response(404, 'Review not found')
     def delete(self, review_id):
         """Delete a review"""
+
         review = facade.get_review(review_id)
+
         if not review:
             return {'error': 'Review not found'}, 404
+
+        current_user = get_jwt_identity()
+
+        if review.user_id != current_user:
+            return {'error': 'Unauthorized action'}, 403
+
 
         facade.delete_review(review_id)
         return {'message': 'Review deleted successfully'}, 200
