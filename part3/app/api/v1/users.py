@@ -104,15 +104,16 @@ class UserResource(Resource):
         if not user:
             return {'error': 'User not found'}, 404
 
+        current_user = get_jwt_identity()
+
+        if current_user != user_id:
+            return {'error': 'Unauthorized action'}, 403
+
         user_data = api.payload
-
-        new_email = user_data.get('email')
-
-        if new_email and new_email != user.email:
-            existing_user = facade.get_user_by_email(new_email)
-            if existing_user and existing_user.id != user_id:
-                return {'error': 'Email already registered'}, 400
-
+        
+        if 'email' in user_data or 'password' in user_data:
+            return {'error': 'You cannot modify email or password.'}, 400
+        
         try:
             updated_user = facade.update_user(user_id, user_data)
         except (ValueError, TypeError) as e:
