@@ -96,6 +96,7 @@ class ReviewResource(Resource):
             return {'error': str(e)}, 400
         return {'message': 'Review updated successfully'}, 200
 
+    @jwt_required()
     @api.response(200, 'Review deleted successfully')
     @api.response(404, 'Review not found')
     def delete(self, review_id):
