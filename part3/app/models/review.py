@@ -8,10 +8,12 @@ from app.models.place import Place
 class Review(BaseModel):
     """Review model.
 
-    Attributes per Part 1 design: rating, text, user_id, place_id.
-    The actual Place/User objects are required at construction time so
-    they can be validated (they must already exist), but only their
-    ids are stored as the persisted relationship attributes.
+    Attributes per Part 2 design: rating, text, place, user. The
+    actual Place/User objects are kept as the relationship attributes
+    (not just their ids) so the review always references a live,
+    validated instance. place_id/user_id remain available as
+    read-only properties derived from those objects, since the rest
+    of the codebase (facade, API layer) addresses reviews by id.
 
     Registering the review with its place (place.add_review()) is the
     caller's responsibility, not this constructor's -- callers that
@@ -28,10 +30,20 @@ class Review(BaseModel):
 
         self.text = text
         self.rating = rating
-        self.place_id = place.id
-        self.user_id = user.id
+        self.place = place
+        self.user = user
 
         self.validate()
+
+    @property
+    def place_id(self):
+        """Id of the referenced place, derived from the place object."""
+        return self.place.id
+
+    @property
+    def user_id(self):
+        """Id of the reviewing user, derived from the user object."""
+        return self.user.id
 
     def validate(self):
         """Validate review attributes."""
@@ -48,10 +60,19 @@ class Review(BaseModel):
         if self.rating < 1 or self.rating > 5:
             raise ValueError("rating must be between 1 and 5")
 
-        if not isinstance(self.place_id, str) or not self.place_id:
-            raise ValueError("place_id is required")
-        if not isinstance(self.user_id, str) or not self.user_id:
-            raise ValueError("user_id is required")
+        if not isinstance(self.place, Place):
+            raise TypeError("place must be a Place")
+        if not isinstance(self.user, User):
+            raise TypeError("user must be a User")
+
+    def to_dict(self):
+        """Return dictionary representation with flattened relationships."""
+        data = super().to_dict()
+        data.pop("place", None)
+        data.pop("user", None)
+        data["place_id"] = self.place_id
+        data["user_id"] = self.user_id
+        return data
 
     @staticmethod
     def list_by_place(reviews, place_id):

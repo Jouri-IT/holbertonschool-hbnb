@@ -32,10 +32,8 @@ class User(BaseModel):
 
     def hash_password(self, password):
         """Hash the password before storing it."""
-        if not isinstance(password, str):
-            raise TypeError("password must be a string")
-        if len(password) < 6:
-            raise ValueError("password must be at least 6 characters")
+        if not isinstance(password, str) or not password:
+            raise TypeError("password must be a non-empty string")
 
         self.password = bcrypt.generate_password_hash(
             password
