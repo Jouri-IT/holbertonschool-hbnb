@@ -47,8 +47,8 @@ class Place(BaseModel):
         if not isinstance(self.price, (int, float)) or \
                 isinstance(self.price, bool):
             raise TypeError("price must be a number")
-        if self.price < 0:
-            raise ValueError("price must be non-negative")
+        if self.price <= 0:
+            raise ValueError("price must be positive")
 
         if not isinstance(self.latitude, (int, float)) or \
                 isinstance(self.latitude, bool):
@@ -66,19 +66,21 @@ class Place(BaseModel):
             raise TypeError("owner must be a User")
 
     def add_review(self, review):
-        """Add review to place."""
+        """Add review to place, skipping it if already attached."""
         # Imported locally to avoid a circular import: review.py
         # already imports Place at module load time.
         from app.models.review import Review
         if not isinstance(review, Review):
             raise TypeError("review must be a Review")
-        self.reviews.append(review)
+        if not any(r.id == review.id for r in self.reviews):
+            self.reviews.append(review)
 
     def add_amenity(self, amenity):
-        """Add amenity to place."""
+        """Add amenity to place, skipping it if already attached."""
         if not isinstance(amenity, Amenity):
             raise TypeError("amenity must be an Amenity")
-        self.amenities.append(amenity)
+        if not any(a.id == amenity.id for a in self.amenities):
+            self.amenities.append(amenity)
 
     def to_dict(self):
         """Return dictionary representation with flattened relationships."""
