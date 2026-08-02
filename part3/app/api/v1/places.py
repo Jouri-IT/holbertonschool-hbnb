@@ -24,25 +24,49 @@ review_model = api.model('PlaceReview', {
     'user_id': fields.String(description='ID of the user')
 })
 
+# owner_id is intentionally absent here: ownership is derived from
+# the JWT identity in PlaceList.post(), not accepted from the client,
+# so it must not be a required (or even accepted) input field.
 place_model = api.model('Place', {
-    'title': fields.String(required=True, description='Title of the place'),
+    'title': fields.String(
+        required=True, description='Title of the place'
+    ),
     'description': fields.String(description='Description of the place'),
     'price': fields.Float(required=True, description='Price per night'),
-    'latitude': fields.Float(required=True, description='Latitude of the place'),
-    'longitude': fields.Float(required=True, description='Longitude of the place'),
-    'owner_id': fields.String(required=True, description='ID of the owner'),
+    'latitude': fields.Float(
+        required=True, description='Latitude of the place'
+    ),
+    'longitude': fields.Float(
+        required=True, description='Longitude of the place'
+    ),
     'owner': fields.Nested(user_model, description='Owner of the place'),
-    'amenities': fields.List(fields.String, required=False, description="List of amenities ID's"),
-    'reviews': fields.List(fields.Nested(review_model), description='List of reviews'),
+    'amenities': fields.List(
+        fields.String, required=False,
+        description="List of amenities ID's"
+    ),
+    'reviews': fields.List(
+        fields.Nested(review_model), description='List of reviews'
+    ),
 })
 
 place_update_model = api.model('PlaceUpdate', {
-    'title': fields.String(required=False, description='Title of the place'),
-    'description': fields.String(required=False, description='Description of the place'),
+    'title': fields.String(
+        required=False, description='Title of the place'
+    ),
+    'description': fields.String(
+        required=False, description='Description of the place'
+    ),
     'price': fields.Float(required=False, description='Price per night'),
-    'latitude': fields.Float(required=False, description='Latitude of the place'),
-    'longitude': fields.Float(required=False, description='Longitude of the place'),
-    'amenities': fields.List(fields.String, required=False, description="List of amenities ID's"),
+    'latitude': fields.Float(
+        required=False, description='Latitude of the place'
+    ),
+    'longitude': fields.Float(
+        required=False, description='Longitude of the place'
+    ),
+    'amenities': fields.List(
+        fields.String, required=False,
+        description="List of amenities ID's"
+    ),
 })
 
 
