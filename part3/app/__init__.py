@@ -11,6 +11,29 @@ from app.api.v1.amenities import api as amenities_ns
 from app.api.v1.places import api as places_ns
 from app.api.v1.reviews import api as reviews_ns
 from app.api.v1.auth import api as auth_ns
+from app.services import facade
+
+
+def seed_admin(app):
+    """Ensure a default admin user exists.
+
+    is_admin is never settable through the public API, and storage is
+    in-memory, so without this there would be no way to ever obtain
+    an admin JWT to test (or use) the admin-only endpoints.
+    """
+    email = app.config["ADMIN_EMAIL"]
+    if facade.get_user_by_email(email):
+        return
+
+    facade.create_user(
+        {
+            "first_name": "Admin",
+            "last_name": "User",
+            "email": email,
+            "password": app.config["ADMIN_PASSWORD"],
+        },
+        is_admin=True,
+    )
 
 
 def create_app(config_class="config.DevelopmentConfig"):
@@ -36,5 +59,7 @@ def create_app(config_class="config.DevelopmentConfig"):
     api.add_namespace(places_ns, path="/api/v1/places")
     api.add_namespace(reviews_ns, path="/api/v1/reviews")
     api.add_namespace(auth_ns, path="/api/v1/auth")
+
+    seed_admin(app)
 
     return app

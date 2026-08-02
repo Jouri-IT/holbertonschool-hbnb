@@ -13,13 +13,17 @@ class HBnBFacade:
         self.amenity_repo = InMemoryRepository()
 
     # --- User Operations ---
-    def create_user(self, user_data):
+    def create_user(self, user_data, is_admin=False):
         """Register a new user account.
 
         Only first_name/last_name/email/password are taken from
         user_data, even though the model accepts more (e.g. is_admin)
         -- the User endpoints never expose those, so nothing from the
-        request body should be able to set them.
+        request body should be able to set them. is_admin is a
+        separate, explicit keyword rather than a user_data key so it
+        can only be set by trusted server-side callers (e.g. the
+        startup admin seed in create_app()), never from a client
+        payload.
 
         Email uniqueness is enforced here (against user_repo) too, so
         direct facade callers, not only HTTP requests, cannot create
@@ -34,6 +38,7 @@ class HBnBFacade:
             last_name=user_data.get('last_name'),
             email=email,
             password=user_data.get('password'),
+            is_admin=is_admin,
         )
         self.user_repo.add(user)
         return user
@@ -50,17 +55,26 @@ class HBnBFacade:
         """Retrieve all registered users."""
         return self.user_repo.get_all()
 
-    def update_user(self, user_id, user_data):
+    def update_user(self, user_id, user_data, is_admin=False):
         """Update an existing user's information.
 
         Same whitelist as create_user -- only first_name/last_name/
-        email are updatable through this endpoint. If the email is
-        changing, it must not already belong to a different user.
+        email are updatable through this endpoint. Admins additionally
+        get password in the whitelist, since only admins are allowed
+        to change another user's password. If the email is changing,
+        it must not already belong to a different user.
+
+        password is popped out and hashed via User.hash_password()
+        rather than being handed to user.update(), which would
+        otherwise setattr() it as plaintext straight over the stored
+        hash.
         """
         user = self.user_repo.get(user_id)
         if not user:
             return None
         allowed = {'first_name', 'last_name', 'email'}
+        if is_admin:
+            allowed.add('password')
         data = {k: v for k, v in user_data.items() if k in allowed}
 
         new_email = data.get('email')
@@ -69,7 +83,14 @@ class HBnBFacade:
             if existing and existing.id != user_id:
                 raise ValueError("Email already registered")
 
+        new_password = data.pop('password', None)
+
         user.update(data)
+
+        if new_password is not None:
+            user.hash_password(new_password)
+            user.save()
+
         return user
 
     # --- Amenity Operations ---
