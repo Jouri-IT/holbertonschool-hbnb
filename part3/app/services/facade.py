@@ -20,11 +20,19 @@ class HBnBFacade:
         user_data, even though the model accepts more (e.g. is_admin)
         -- the User endpoints never expose those, so nothing from the
         request body should be able to set them.
+
+        Email uniqueness is enforced here (against user_repo) too, so
+        direct facade callers, not only HTTP requests, cannot create
+        two users with the same email.
         """
+        email = user_data.get('email')
+        if email and self.user_repo.get_by_attribute('email', email):
+            raise ValueError("Email already registered")
+
         user = User(
             first_name=user_data.get('first_name'),
             last_name=user_data.get('last_name'),
-            email=user_data.get('email'),
+            email=email,
             password=user_data.get('password'),
         )
         self.user_repo.add(user)
@@ -46,13 +54,22 @@ class HBnBFacade:
         """Update an existing user's information.
 
         Same whitelist as create_user -- only first_name/last_name/
-        email are updatable through this endpoint.
+        email are updatable through this endpoint. If the email is
+        changing, it must not already belong to a different user.
         """
         user = self.user_repo.get(user_id)
         if not user:
             return None
         allowed = {'first_name', 'last_name', 'email'}
-        user.update({k: v for k, v in user_data.items() if k in allowed})
+        data = {k: v for k, v in user_data.items() if k in allowed}
+
+        new_email = data.get('email')
+        if new_email and new_email != user.email:
+            existing = self.user_repo.get_by_attribute('email', new_email)
+            if existing and existing.id != user_id:
+                raise ValueError("Email already registered")
+
+        user.update(data)
         return user
 
     # --- Amenity Operations ---
@@ -103,14 +120,14 @@ class HBnBFacade:
         owner = self.user_repo.get(owner_id)
         if not owner:
             raise ValueError("Owner user does not exist")
-        
-        # Remove owner_id from data; Place constructor takes owner object, 
+
+        # Remove owner_id from data; Place constructor takes owner object,
         # amenities are attached after
         place_data_copy = place_data.copy()
         place_data_copy.pop('owner_id', None)
         amenity_ids = place_data_copy.pop('amenities', [])
         place_data_copy['owner'] = owner
-        
+
         place = Place(**place_data_copy)
 
         for amenity_id in amenity_ids:
@@ -132,22 +149,22 @@ class HBnBFacade:
 
     def list_places(self, filters=None):
         """List all places with optional filtering.
-        
+
         Filters could include: price_min, price_max, latitude, longitude, etc.
         Per Part 1 Fig 6, filtering is done by the facade/model, not the repo.
         """
         places = self.place_repo.get_all()
-        
+
         if not filters:
             return places
-        
+
         # Apply filtering logic here (minimal for now)
         filtered = places
         if 'price_min' in filters:
             filtered = [p for p in filtered if p.price >= filters['price_min']]
         if 'price_max' in filters:
             filtered = [p for p in filtered if p.price <= filters['price_max']]
-        
+
         return filtered
 
     def update_place(self, place_id, place_data):
@@ -205,7 +222,7 @@ class HBnBFacade:
         # Prevent users from reviewing their own place
         if place.owner_id == user.id:
             raise ValueError("You cannot review your own place")
-        
+
         # Prevent duplicate reviews
         for review in self.review_repo.get_all():
             if review.user_id == user.id and review.place_id == place.id:
