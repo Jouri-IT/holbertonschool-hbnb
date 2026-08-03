@@ -5,6 +5,11 @@ from app.models.base_model import BaseModel
 from app.models.user import User
 from app.models.amenity import Amenity
 
+place_amenity = db.Table(
+    'place_amenity',
+    db.Column('place_id', db.Integer, db.ForeignKey('places.id'), primary_key=True),
+    db.Column('amenity_id', db.Integer, db.ForeignKey('amenities.id'), primary_key=True)
+)
 
 class Place(BaseModel):
     """Place model."""
@@ -18,12 +23,12 @@ class Place(BaseModel):
     latitude = db.Column(db.Float, nullable=False)
     longitude = db.Column(db.Float, nullable=False)
 
-    # Plain scalar copy of the owner's id -- a real db.ForeignKey and
-    # relationship() land in the relationships task, not this one.
-    # It's still a mapped column (not just a Python attribute) so
-    # ownership survives across requests/sessions; `owner` below is
-    # a same-request-only convenience reference to the actual User.
-    owner_id = db.Column(db.String(36), nullable=False)
+    owner_id = db.Column(db.String(36), db.ForeignKey('users.id'), nullable=False)
+
+    reviews = db.relationship('Review', backref='place', lazy=True)
+    amenities = db.relationship('Amenity', secondary='place_amenity',
+                                lazy='subquery',
+                                backref=db.backref('places', lazy=True))
 
     def __init__(self, title, price, latitude, longitude, owner,
                  description=None):
@@ -38,11 +43,7 @@ class Place(BaseModel):
         self.latitude = latitude
         self.longitude = longitude
 
-        self.owner = owner
         self.owner_id = owner.id
-
-        self.reviews = []
-        self.amenities = []
 
         self.validate()
 
@@ -93,18 +94,14 @@ class Place(BaseModel):
         # A place fetched fresh from the DB (rather than freshly
         # constructed) won't have `reviews` set yet -- see the
         # to_dict() note below.
-        if not hasattr(self, 'reviews'):
-            self.reviews = []
-        if not any(r.id == review.id for r in self.reviews):
+        if review not in self.reviews:
             self.reviews.append(review)
 
     def add_amenity(self, amenity):
         """Add amenity to place, skipping it if already attached."""
         if not isinstance(amenity, Amenity):
             raise TypeError("amenity must be an Amenity")
-        if not hasattr(self, 'amenities'):
-            self.amenities = []
-        if not any(a.id == amenity.id for a in self.amenities):
+        if amenity not in self.amenities:
             self.amenities.append(amenity)
 
     def to_dict(self):
@@ -112,10 +109,7 @@ class Place(BaseModel):
         data = super().to_dict()
         data.pop("owner", None)
         data["owner_id"] = self.owner_id
-        # reviews/amenities are plain (unmapped) attributes only ever
-        # set at construction time -- a Place fetched fresh from the
-        # DB in a later request won't have them, since there's no
-        # relationship() to reload them from yet.
+
         data["reviews"] = [review.id for review in getattr(self, 'reviews', [])]
         data["amenities"] = [amenity.id for amenity in getattr(self, 'amenities', [])]
         return data

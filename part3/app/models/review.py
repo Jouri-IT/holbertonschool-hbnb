@@ -11,13 +11,10 @@ class Review(BaseModel):
 
     Attributes per Part 2 design: rating, text, place, user.
 
-    place_id/user_id are real mapped columns (plain scalars -- a real
-    db.ForeignKey and relationship() land in the relationships task,
-    not this one) so a review fetched fresh from the DB in a later
-    request still knows which place/user it belongs to. `place`/
-    `user` are kept too, as same-request-only convenience references
-    to the actual objects (e.g. so validate() can type-check them
-    right after construction).
+    place_id/user_id are real mapped columns with ForeignKey
+    constraints to places.id and users.id. `place`/`user` are
+    available automatically via backref from Place.reviews and
+    User.reviews, not set manually here.
 
     Registering the review with its place (place.add_review()) is the
     caller's responsibility, not this constructor's -- callers that
@@ -29,8 +26,8 @@ class Review(BaseModel):
     id = db.Column(db.Integer, primary_key=True)
     text = db.Column(db.String(1000), nullable=False)
     rating = db.Column(db.Integer, nullable=False)
-    place_id = db.Column(db.Integer, nullable=False)
-    user_id = db.Column(db.String(36), nullable=False)
+    place_id = db.Column(db.Integer, db.ForeignKey('places.id'), nullable=False)
+    user_id = db.Column(db.String(36), db.ForeignKey('users.id'), nullable=False)
 
     def __init__(self, text, rating, place, user):
         super().__init__()
@@ -42,8 +39,6 @@ class Review(BaseModel):
 
         self.text = text
         self.rating = rating
-        self.place = place
-        self.user = user
         self.place_id = place.id
         self.user_id = user.id
 
@@ -64,9 +59,9 @@ class Review(BaseModel):
         if self.rating < 1 or self.rating > 5:
             raise ValueError("rating must be between 1 and 5")
 
-        # self.place/self.user (the actual objects) don't survive a
-        # fresh DB fetch in a later request -- place_id/user_id (real
-        # columns) do, and are what update_review() actually revalidates.
+        # place_id/user_id are the columns update_review() actually
+        # revalidates; self.place/self.user are available via backref
+        # but are not the source of truth for validation.
         if not self.place_id:
             raise ValueError("place_id is required")
         if not self.user_id:

@@ -27,6 +27,9 @@ class User(BaseModel):
     password = db.Column(db.String(128), nullable=False)
     is_admin = db.Column(db.Boolean, default=False)
 
+    places = db.relationship('Place', backref='owner', lazy=True)
+    reviews = db.relationship('Review', backref='author', lazy=True)
+
     def __init__(self, first_name, last_name, email, password,
                  is_admin=False):
         super().__init__()
