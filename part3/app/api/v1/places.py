@@ -6,7 +6,7 @@ api = Namespace('places', description='Place operations')
 
 # Define the models for related entities
 amenity_model = api.model('PlaceAmenity', {
-    'id': fields.String(description='Amenity ID'),
+    'id': fields.Integer(description='Amenity ID'),
     'name': fields.String(description='Name of the amenity')
 })
 
@@ -18,7 +18,7 @@ user_model = api.model('PlaceUser', {
 })
 
 review_model = api.model('PlaceReview', {
-    'id': fields.String(description='Review ID'),
+    'id': fields.Integer(description='Review ID'),
     'text': fields.String(description='Text of the review'),
     'rating': fields.Integer(description='Rating of the place (1-5)'),
     'user_id': fields.String(description='ID of the user')
@@ -41,7 +41,7 @@ place_model = api.model('Place', {
     ),
     'owner': fields.Nested(user_model, description='Owner of the place'),
     'amenities': fields.List(
-        fields.String, required=False,
+        fields.Integer, required=False,
         description="List of amenities ID's"
     ),
     'reviews': fields.List(
@@ -64,7 +64,7 @@ place_update_model = api.model('PlaceUpdate', {
         required=False, description='Longitude of the place'
     ),
     'amenities': fields.List(
-        fields.String, required=False,
+        fields.Integer, required=False,
         description="List of amenities ID's"
     ),
 })
@@ -92,21 +92,34 @@ def place_created(place):
 
 
 def serialize_place(place):
+    """Build the full place representation for a single-place GET.
+
+    place.owner/place.reviews are same-request-only convenience
+    attributes (no db.ForeignKey/relationship() yet -- that's the
+    next task), so a place fetched fresh in a later request won't
+    have them. owner and reviews are instead looked up fresh through
+    the facade by the persisted owner_id/place.id; amenities has no
+    persisted association yet at all, so it's read from the
+    in-memory attribute (only accurate within the request that
+    created/updated it) until the relationships task adds the join
+    table.
+    """
     data = place.to_dict()
 
+    owner = facade.get_user(place.owner_id)
     data['owner'] = {
-        'id': place.owner.id,
-        'first_name': place.owner.first_name,
-        'last_name': place.owner.last_name,
-        'email': place.owner.email,
-    }
+        'id': owner.id,
+        'first_name': owner.first_name,
+        'last_name': owner.last_name,
+        'email': owner.email,
+    } if owner else None
 
     data['amenities'] = [
         {
             'id': a.id,
             'name': a.name
         }
-        for a in place.amenities
+        for a in getattr(place, 'amenities', [])
     ]
 
     data['reviews'] = [
@@ -116,7 +129,7 @@ def serialize_place(place):
             'rating': r.rating,
             'user_id': r.user_id,
         }
-        for r in place.reviews
+        for r in facade.get_reviews_by_place(place.id)
     ]
 
     return data
@@ -153,7 +166,7 @@ class PlaceList(Resource):
         return [place_summary(p) for p in places], 200
 
 
-@api.route('/<place_id>')
+@api.route('/<int:place_id>')
 class PlaceResource(Resource):
 
     @api.response(200, 'Place details retrieved successfully')
@@ -195,7 +208,7 @@ class PlaceResource(Resource):
         return {'message': 'Place updated successfully'}, 200
 
 
-@api.route('/<place_id>/reviews')
+@api.route('/<int:place_id>/reviews')
 class PlaceReviewList(Resource):
 
     @api.response(200, 'List of reviews for the place retrieved successfully')

@@ -46,7 +46,7 @@ class AmenityList(Resource):
         return [{'id': a.id, 'name': a.name} for a in amenities], 200
 
 
-@api.route('/<amenity_id>')
+@api.route('/<int:amenity_id>')
 class AmenityResource(Resource):
 
     @api.response(200, 'Amenity details retrieved successfully')

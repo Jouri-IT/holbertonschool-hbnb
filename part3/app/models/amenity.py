@@ -1,5 +1,6 @@
 #!/usr/bin/python3
 
+from app import db
 from app.models.base_model import BaseModel
 
 
@@ -8,6 +9,12 @@ class Amenity(BaseModel):
 
     Attributes per Part 1 design: name, description.
     """
+
+    __tablename__ = 'amenities'
+
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(50), nullable=False, unique=True)
+    description = db.Column(db.String(255), nullable=True)
 
     def __init__(self, name, description=""):
         super().__init__()

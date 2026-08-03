@@ -1,5 +1,7 @@
-from app.persistence.repository import InMemoryRepository
 from app.services.repositories.user_repository import UserRepository
+from app.services.repositories.place_repository import PlaceRepository
+from app.services.repositories.review_repository import ReviewRepository
+from app.services.repositories.amenity_repository import AmenityRepository
 from app.models.user import User
 from app.models.amenity import Amenity
 from app.models.place import Place
@@ -9,9 +11,9 @@ from app.models.review import Review
 class HBnBFacade:
     def __init__(self):
         self.user_repo = UserRepository()
-        self.place_repo = InMemoryRepository()
-        self.review_repo = InMemoryRepository()
-        self.amenity_repo = InMemoryRepository()
+        self.place_repo = PlaceRepository()
+        self.review_repo = ReviewRepository()
+        self.amenity_repo = AmenityRepository()
 
     # --- User Operations ---
     def create_user(self, user_data, is_admin=False):
@@ -134,6 +136,7 @@ class HBnBFacade:
                    for a in self.amenity_repo.get_all()):
                 raise ValueError("Amenity name already exists")
         amenity.update(amenity_data)
+        self.amenity_repo.add(amenity)
         return amenity
 
     def delete_amenity(self, amenity_id):
@@ -224,6 +227,7 @@ class HBnBFacade:
                 amenities.append(amenity)
             place.amenities = amenities
 
+        self.place_repo.add(place)
         return place
 
     # --- Review Operations ---
@@ -293,6 +297,7 @@ class HBnBFacade:
             return None
         allowed = {'text', 'rating'}
         review.update({k: v for k, v in review_data.items() if k in allowed})
+        self.review_repo.add(review)
         return review
 
     def delete_review(self, review_id):
@@ -300,6 +305,6 @@ class HBnBFacade:
         review = self.review_repo.get(review_id)
         if review:
             place = self.place_repo.get(review.place_id)
-            if place and review in place.reviews:
+            if place and review in getattr(place, 'reviews', []):
                 place.reviews.remove(review)
         self.review_repo.delete(review_id)

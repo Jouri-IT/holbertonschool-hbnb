@@ -1,6 +1,5 @@
 #!/usr/bin/python3
 
-import uuid
 from datetime import datetime
 
 from app import db
@@ -9,31 +8,30 @@ from app import db
 class BaseModel(db.Model):
     """Base class for all models.
 
-    Provides the shared id/timestamp fields and the create(), update(),
+    Provides the shared timestamp fields and the create(), update(),
     delete() lifecycle hooks from the Part 1 class diagram. Actual
     persistence (INSERT/UPDATE/DELETE) is the Persistence layer's job,
     per our own architecture doc -- these hooks keep the object itself
     internally consistent (timestamps, validation) regardless of how
     it's stored.
+
+    id isn't defined here: User keeps a UUID string primary key,
+    while Place/Review/Amenity use an autoincrement Integer primary
+    key, so each subclass declares its own `id` column.
     """
 
     __abstract__ = True
 
-    id = db.Column(db.String(36), primary_key=True,
-                   default=lambda: str(uuid.uuid4()))
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime, default=datetime.utcnow,
                             onupdate=datetime.utcnow)
 
     def __init__(self, *args, **kwargs):
-        # Column defaults above only apply once a row is flushed to
-        # the database. Place/Review/Amenity aren't mapped yet and
-        # still go through InMemoryRepository, so id/timestamps are
-        # also set eagerly here to keep them working exactly as
-        # before, immediately at construction time.
+        # created_at/updated_at only get their column default applied
+        # once a row is flushed to the database; setting them eagerly
+        # here keeps them available immediately at construction time
+        # too, e.g. for objects serialized before their first commit.
         super().__init__(*args, **kwargs)
-        if not self.id:
-            self.id = str(uuid.uuid4())
         if not self.created_at:
             self.created_at = datetime.utcnow()
         if not self.updated_at:

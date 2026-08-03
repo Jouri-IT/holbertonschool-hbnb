@@ -9,7 +9,7 @@ api = Namespace('reviews', description='Review operations')
 review_creation_model = api.model('ReviewCreation', {
     'text': fields.String(required=True, description='Text of the review'),
     'rating': fields.Integer(required=True, description='Rating of the place (1-5)'),
-    'place_id': fields.String(required=True, description='ID of the place')
+    'place_id': fields.Integer(required=True, description='ID of the place')
 })
 
 review_update_model = api.model('ReviewUpdate', {
@@ -62,7 +62,7 @@ class ReviewList(Resource):
         return [review_summary(r) for r in reviews], 200
 
 
-@api.route('/<review_id>')
+@api.route('/<int:review_id>')
 class ReviewResource(Resource):
     @api.response(200, 'Review details retrieved successfully')
     @api.response(404, 'Review not found')
