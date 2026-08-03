@@ -3,8 +3,10 @@
 import uuid
 from datetime import datetime
 
+from app import db
 
-class BaseModel:
+
+class BaseModel(db.Model):
     """Base class for all models.
 
     Provides the shared id/timestamp fields and the create(), update(),
@@ -15,10 +17,27 @@ class BaseModel:
     it's stored.
     """
 
-    def __init__(self):
-        self.id = str(uuid.uuid4())
-        self.created_at = datetime.now()
-        self.updated_at = datetime.now()
+    __abstract__ = True
+
+    id = db.Column(db.String(36), primary_key=True,
+                   default=lambda: str(uuid.uuid4()))
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    updated_at = db.Column(db.DateTime, default=datetime.utcnow,
+                            onupdate=datetime.utcnow)
+
+    def __init__(self, *args, **kwargs):
+        # Column defaults above only apply once a row is flushed to
+        # the database. Place/Review/Amenity aren't mapped yet and
+        # still go through InMemoryRepository, so id/timestamps are
+        # also set eagerly here to keep them working exactly as
+        # before, immediately at construction time.
+        super().__init__(*args, **kwargs)
+        if not self.id:
+            self.id = str(uuid.uuid4())
+        if not self.created_at:
+            self.created_at = datetime.utcnow()
+        if not self.updated_at:
+            self.updated_at = datetime.utcnow()
 
     def create(self):
         """Lifecycle hook for when the object is first persisted."""
@@ -26,7 +45,7 @@ class BaseModel:
 
     def save(self):
         """Update the updated_at timestamp."""
-        self.updated_at = datetime.now()
+        self.updated_at = datetime.utcnow()
 
     def update(self, data):
         """Update attributes from a dict, then re-validate.
@@ -64,6 +83,11 @@ class BaseModel:
         """Return a JSON-serializable dictionary representation."""
         result = {}
         for key, value in self.__dict__.items():
+            # SQLAlchemy stores its own bookkeeping (InstanceState)
+            # under this key in the instance __dict__ alongside the
+            # mapped columns; it isn't part of the model's data.
+            if key == "_sa_instance_state":
+                continue
             if isinstance(value, datetime):
                 result[key] = value.isoformat()
             else:

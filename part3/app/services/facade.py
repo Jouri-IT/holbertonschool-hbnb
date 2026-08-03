@@ -1,4 +1,5 @@
-from app.persistence.repository import InMemoryRepository, SQLAlchemyRepository
+from app.persistence.repository import InMemoryRepository
+from app.services.repositories.user_repository import UserRepository
 from app.models.user import User
 from app.models.amenity import Amenity
 from app.models.place import Place
@@ -7,7 +8,7 @@ from app.models.review import Review
 
 class HBnBFacade:
     def __init__(self):
-        self.user_repo = SQLAlchemyRepository(User)
+        self.user_repo = UserRepository()
         self.place_repo = InMemoryRepository()
         self.review_repo = InMemoryRepository()
         self.amenity_repo = InMemoryRepository()
@@ -30,7 +31,7 @@ class HBnBFacade:
         two users with the same email.
         """
         email = user_data.get('email')
-        if email and self.user_repo.get_by_attribute('email', email):
+        if email and self.user_repo.get_user_by_email(email):
             raise ValueError("Email already registered")
 
         user = User(
@@ -49,7 +50,7 @@ class HBnBFacade:
 
     def get_user_by_email(self, email):
         """Fetch a user by email address."""
-        return self.user_repo.get_by_attribute('email', email)
+        return self.user_repo.get_user_by_email(email)
 
     def get_all_users(self):
         """Retrieve all registered users."""
@@ -79,7 +80,7 @@ class HBnBFacade:
 
         new_email = data.get('email')
         if new_email and new_email != user.email:
-            existing = self.user_repo.get_by_attribute('email', new_email)
+            existing = self.user_repo.get_user_by_email(new_email)
             if existing and existing.id != user_id:
                 raise ValueError("Email already registered")
 
@@ -90,6 +91,12 @@ class HBnBFacade:
         if new_password is not None:
             user.hash_password(new_password)
             user.save()
+
+        # user.update()/hash_password() above only mutate the object
+        # in memory; route back through the repo to persist the
+        # change (add() is a safe no-op for an already-tracked row --
+        # it's the commit that matters here).
+        self.user_repo.add(user)
 
         return user
 
