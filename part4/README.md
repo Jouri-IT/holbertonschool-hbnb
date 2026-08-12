@@ -73,23 +73,6 @@ Implement a form to add a review for a place.
 
 The form should only be accessible to authenticated users. Unauthenticated users should be redirected to the index page.
 
-## Project Structure
-
-part4/
-├── README.md
-└── base_files/
-    ├── images/
-    │   ├── icon.png
-    │   ├── icon_bath.png
-    │   ├── icon_bed.png
-    │   ├── icon_wifi.png
-    │   └── logo.png
-    ├── index.html
-    ├── login.html
-    ├── place.html
-    ├── add_review.html
-    └── scripts.js
-
 ## Testing
 
 The application should be tested to verify:
