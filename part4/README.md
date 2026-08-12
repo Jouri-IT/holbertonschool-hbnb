@@ -75,7 +75,6 @@ The form should only be accessible to authenticated users. Unauthenticated users
 
 ## Project Structure
 
-```text
 part4/
 ├── README.md
 └── base_files/
