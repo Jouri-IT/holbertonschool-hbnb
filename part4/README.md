@@ -73,14 +73,9 @@ Implement a form to add a review for a place.
 
 The form should only be accessible to authenticated users. Unauthenticated users should be redirected to the index page.
 
-## API Integration
-
-The web client communicates with the HBnB REST API using JavaScript Fetch/AJAX requests.
-
-Authentication information is included when accessing protected endpoints.
-
 ## Project Structure
 
+```text
 part4/
 ├── README.md
 └── base_files/
@@ -96,25 +91,35 @@ part4/
     ├── add_review.html
     └── scripts.js
 
-## The application should be tested to verify:
+## Testing
 
-Successful and failed login.
-JWT cookie creation.
-Places are retrieved from the API.
-Client-side filtering works correctly.
-Place details are displayed correctly.
-Authenticated users can access the review form.
-Unauthenticated users are redirected.
-Reviews can be submitted successfully.
-API errors are handled correctly.
+The application should be tested to verify:
 
+- Successful and failed login.
+- JWT cookie creation.
+- Places are retrieved from the API.
+- Client-side filtering works correctly.
+- Place details are displayed correctly.
+- Authenticated users can access the review form.
+- Unauthenticated users are redirected correctly.
+- Reviews can be submitted successfully.
+- API errors are handled correctly.
+
+## Technologies
+
+- HTML5
+- CSS3
+- JavaScript ES6
+- Fetch API
+- REST API
+- JWT Authentication
 
 ## Team Members
 
-Razan Kashr
-Reema Almujalli
-Jouri AlSulaiman
+- Razan Kashr
+- Reema Almujalli
+- Jouri AlSulaiman
 
 ## Goal
 
-## The goal of this phase is to build an interactive web client that connects the HBnB front-end with the existing REST API while providing authentication, place browsing, place details, and review functionality.
+The goal of this phase is to build an interactive web client that connects the HBnB front-end with the existing REST API while providing authentication, place browsing, place details, and review functionality.
