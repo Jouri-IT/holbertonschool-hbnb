@@ -31,7 +31,7 @@ The client connects to the HBnB REST API developed in the previous phases and pr
 
 ## Tasks
 
-### Task 1 - Design
+### Task 0 - Design
 
 Complete the provided HTML and CSS files according to the design specifications.
 
@@ -42,13 +42,13 @@ Create the following pages:
 - Place Details
 - Add Review
 
-### Task 2 - Login
+### Task 1 - Login
 
 Implement login functionality using the backend API.
 
 The JWT token returned by the API is stored in a cookie for session management.
 
-### Task 3 - List of Places
+### Task 2 - List of Places
 
 Implement the main page to:
 
@@ -57,7 +57,7 @@ Implement the main page to:
 - Filter places on the client side based on country selection.
 - Redirect unauthenticated users to the login page when required.
 
-### Task 4 - Place Details
+### Task 3 - Place Details
 
 Implement the detailed view of a place.
 
@@ -67,7 +67,7 @@ The page should:
 - Display the place information.
 - Provide access to the Add Review form for authenticated users.
 
-### Task 5 - Add Review
+### Task 4 - Add Review
 
 Implement a form to add a review for a place.
 
@@ -79,13 +79,8 @@ The web client communicates with the HBnB REST API using JavaScript Fetch/AJAX r
 
 Authentication information is included when accessing protected endpoints.
 
-## CORS
-
-The backend API must allow requests from the web client when the client and API are running on different origins.
-
 ## Project Structure
 
-```text
 part4/
 ├── README.md
 └── base_files/
