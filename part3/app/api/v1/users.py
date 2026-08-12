@@ -130,7 +130,7 @@ class UserResource(Resource):
         user_data = api.payload
 
         if not is_admin and ('email' in user_data or 'password' in user_data):
-            return {'error': 'You cannot modify email or password.'}, 400
+            return {'error': 'You cannot modify email or password'}, 400
 
         email = user_data.get('email')
         if is_admin and email:
