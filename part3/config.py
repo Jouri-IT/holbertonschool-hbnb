@@ -24,3 +24,14 @@ config = {
     "development": DevelopmentConfig,
     "default": DevelopmentConfig
 }
+
+class TestingConfig(Config):
+    TESTING = True
+    SQLALCHEMY_DATABASE_URI = 'sqlite:///:memory:'
+    SQLALCEMY_TRACK_MODIFICATIONS = False
+
+config = {
+    "development": DevelopmentConfig,
+    "testing": TestingConfig,
+    "default": DevelopmentConfig
+}
