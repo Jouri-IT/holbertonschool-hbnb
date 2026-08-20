@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login — Sukoon</title>
+    <meta name="description" content="Sign in to your Sukoon account to reserve a residence in the AlUla desert highlands.">
+    <link rel="icon" type="image/png" href="images/icon.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header class="header">
+        <div class="wrap">
+            <a href="index.html" class="logo-link">
+                <svg class="logo" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
+                    <path d="M24 6c-10 0-16 10-16 22v10h32V28C40 16 34 6 24 6z" fill="none" stroke="currentColor" stroke-width="1.6"/>
+                    <line x1="4" y1="38" x2="44" y2="38" stroke="currentColor" stroke-width="1.6"/>
+                </svg>
+                <span class="wordmark">Sukoon</span>
+            </a>
+            <nav class="main-nav">
+                <a href="index.html">Residences</a>
+                <a href="login.html" id="login-link" class="login-button">Login</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="login-section">
+        <form id="login-form" class="form login-form">
+            <h1>Welcome Back</h1>
+            <p class="form-sub">Sign in to reserve your stay at Sukoon.</p>
+
+            <p id="login-error" class="error-message" hidden></p>
+
+            <label for="email">Email</label>
+            <input type="email" id="email" name="email" required autocomplete="email">
+
+            <label for="password">Password</label>
+            <input type="password" id="password" name="password" required autocomplete="current-password">
+
+            <button type="submit" class="details-button">Login</button>
+        </form>
+    </main>
+
+    <footer class="footer">
+        <div class="wrap">
+            <div class="footer-brand">
+                <a href="index.html" class="logo-link">
+                    <svg class="logo" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
+                        <path d="M24 6c-10 0-16 10-16 22v10h32V28C40 16 34 6 24 6z" fill="none" stroke="currentColor" stroke-width="1.6"/>
+                        <line x1="4" y1="38" x2="44" y2="38" stroke="currentColor" stroke-width="1.6"/>
+                    </svg>
+                    <span class="wordmark">Sukoon</span>
+                </a>
+                <p>A private desert resort in the AlUla highlands of Saudi Arabia — five residences, one horizon.</p>
+            </div>
+            <nav class="footer-nav">
+                <a href="index.html">Residences</a>
+                <a href="login.html">Login</a>
+            </nav>
+        </div>
+        <div class="footer-bottom">
+            <div class="wrap">
+                <span>&copy; 2026 Sukoon Desert Resort. All rights reserved.</span>
+                <span>AlUla, Kingdom of Saudi Arabia</span>
+            </div>
+        </div>
+    </footer>
+
+    <script src="scripts.js"></script>
+</body>
+</html>

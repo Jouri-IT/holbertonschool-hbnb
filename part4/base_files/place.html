@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Desert Pavilion — Sukoon</title>
+    <meta name="description" content="Desert Pavilion at Sukoon — a minimal residence set low into the dunes of the AlUla highlands.">
+    <link rel="icon" type="image/png" href="images/icon.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header class="header">
+        <div class="wrap">
+            <a href="index.html" class="logo-link">
+                <svg class="logo" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
+                    <path d="M24 6c-10 0-16 10-16 22v10h32V28C40 16 34 6 24 6z" fill="none" stroke="currentColor" stroke-width="1.6"/>
+                    <line x1="4" y1="38" x2="44" y2="38" stroke="currentColor" stroke-width="1.6"/>
+                </svg>
+                <span class="wordmark">Sukoon</span>
+            </a>
+            <nav class="main-nav">
+                <a href="index.html">Residences</a>
+                <a href="login.html" id="login-link" class="login-button">Login</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="place-main">
+        <section class="place-hero">
+            <img src="images/resort/desert-pavilion.jpg" alt="Desert Pavilion, a minimal concrete residence built into a dune" class="place-hero-image">
+            <div class="place-hero-content">
+                <span class="eyebrow">01 — Pavilion</span>
+                <h1 id="place-name">Desert Pavilion</h1>
+                <p class="place-location">Sukoon, AlUla Desert Highlands</p>
+            </div>
+        </section>
+
+        <section id="place-details" class="place-details">
+            <h2 class="sr-only">Residence Information</h2>
+            <div class="place-info">
+                <p>
+                    <span class="field-label">Host</span>
+                    <span id="place-host">Omar Al-Rashid, Estate Host</span>
+                </p>
+                <p>
+                    <span class="field-label">Price per night</span>
+                    $<span id="place-price">980</span>
+                </p>
+                <p class="place-description" id="place-description">
+                    Set low against a dune, the Desert Pavilion opens onto its own private terrace where sand meets a
+                    poured-concrete threshold. Interiors are spare and tactile — raw plaster, linen and stone — built
+                    to hold shadow through the heat of the day and starlight after dark.
+                </p>
+                <div>
+                    <span class="field-label">Amenities</span>
+                    <ul class="amenities-list" id="place-amenities">
+                        <li><img src="images/icon_wifi.png" alt="" class="amenity-icon">In-villa WiFi</li>
+                        <li><img src="images/icon_bed.png" alt="" class="amenity-icon">King Bed</li>
+                        <li><img src="images/icon_bath.png" alt="" class="amenity-icon">Outdoor Rain Shower</li>
+                        <li>Private Terrace &amp; Daybed</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <section class="reviews-section">
+            <h2>Reviews</h2>
+            <div id="reviews" class="reviews-list">
+                <article class="review-card">
+                    <div class="review-card-body">
+                        <h3 class="review-author">Elena Marchetti</h3>
+                        <p class="review-comment">Four nights, and I still think about the quiet each morning at the
+                            terrace. This is what rest actually feels like.</p>
+                        <p class="review-rating">Rating: &#9733;&#9733;&#9733;&#9733;&#9733;</p>
+                    </div>
+                </article>
+
+                <article class="review-card">
+                    <div class="review-card-body">
+                        <h3 class="review-author">Thomas Berg</h3>
+                        <p class="review-comment">Beautifully understated design. The only thing I would change is
+                            staying longer.</p>
+                        <p class="review-rating">Rating: &#9733;&#9733;&#9733;&#9733;&#9734;</p>
+                    </div>
+                </article>
+            </div>
+        </section>
+
+        <section id="add-review" class="add-review">
+            <h2 class="sr-only">Add a Review</h2>
+            <a href="add_review.html?id=desert-pavilion" class="details-button">Add a Review</a>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="wrap">
+            <div class="footer-brand">
+                <a href="index.html" class="logo-link">
+                    <svg class="logo" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
+                        <path d="M24 6c-10 0-16 10-16 22v10h32V28C40 16 34 6 24 6z" fill="none" stroke="currentColor" stroke-width="1.6"/>
+                        <line x1="4" y1="38" x2="44" y2="38" stroke="currentColor" stroke-width="1.6"/>
+                    </svg>
+                    <span class="wordmark">Sukoon</span>
+                </a>
+                <p>A private desert resort in the AlUla highlands of Saudi Arabia — five residences, one horizon.</p>
+            </div>
+            <nav class="footer-nav">
+                <a href="index.html">Residences</a>
+                <a href="login.html">Login</a>
+            </nav>
+        </div>
+        <div class="footer-bottom">
+            <div class="wrap">
+                <span>&copy; 2026 Sukoon Desert Resort. All rights reserved.</span>
+                <span>AlUla, Kingdom of Saudi Arabia</span>
+            </div>
+        </div>
+    </footer>
+
+    <script src="scripts.js"></script>
+</body>
+</html>

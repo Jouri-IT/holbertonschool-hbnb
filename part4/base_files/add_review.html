@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add a Review — Sukoon</title>
+    <meta name="description" content="Share your stay at Sukoon, a private desert resort in the AlUla highlands of Saudi Arabia.">
+    <link rel="icon" type="image/png" href="images/icon.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header class="header">
+        <div class="wrap">
+            <a href="index.html" class="logo-link">
+                <svg class="logo" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
+                    <path d="M24 6c-10 0-16 10-16 22v10h32V28C40 16 34 6 24 6z" fill="none" stroke="currentColor" stroke-width="1.6"/>
+                    <line x1="4" y1="38" x2="44" y2="38" stroke="currentColor" stroke-width="1.6"/>
+                </svg>
+                <span class="wordmark">Sukoon</span>
+            </a>
+            <nav class="main-nav">
+                <a href="index.html">Residences</a>
+                <a href="login.html" id="login-link" class="login-button">Login</a>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <div class="page-heading">
+            <span class="eyebrow">Guest Review</span>
+            <h1>Reviewing: <span id="review-place-name">Desert Pavilion</span></h1>
+        </div>
+
+        <section class="add-review-section">
+            <form id="review-form" class="form add-review">
+                <h2>Share Your Stay</h2>
+
+                <p id="review-message" class="error-message" hidden></p>
+
+                <label for="review">Your Review</label>
+                <textarea id="review" name="review" rows="6" required></textarea>
+
+                <label for="rating">Rating</label>
+                <select id="rating" name="rating" required>
+                    <option value="" disabled selected>Select a rating</option>
+                    <option value="1">1 Star</option>
+                    <option value="2">2 Stars</option>
+                    <option value="3">3 Stars</option>
+                    <option value="4">4 Stars</option>
+                    <option value="5">5 Stars</option>
+                </select>
+
+                <button type="submit" class="details-button">Submit Review</button>
+            </form>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="wrap">
+            <div class="footer-brand">
+                <a href="index.html" class="logo-link">
+                    <svg class="logo" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
+                        <path d="M24 6c-10 0-16 10-16 22v10h32V28C40 16 34 6 24 6z" fill="none" stroke="currentColor" stroke-width="1.6"/>
+                        <line x1="4" y1="38" x2="44" y2="38" stroke="currentColor" stroke-width="1.6"/>
+                    </svg>
+                    <span class="wordmark">Sukoon</span>
+                </a>
+                <p>A private desert resort in the AlUla highlands of Saudi Arabia — five residences, one horizon.</p>
+            </div>
+            <nav class="footer-nav">
+                <a href="index.html">Residences</a>
+                <a href="login.html">Login</a>
+            </nav>
+        </div>
+        <div class="footer-bottom">
+            <div class="wrap">
+                <span>&copy; 2026 Sukoon Desert Resort. All rights reserved.</span>
+                <span>AlUla, Kingdom of Saudi Arabia</span>
+            </div>
+        </div>
+    </footer>
+
+    <script src="scripts.js"></script>
+</body>
+</html>

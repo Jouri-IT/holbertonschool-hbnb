@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sukoon — A Private Desert Resort</title>
+    <meta name="description" content="Sukoon is a private desert resort in the AlUla highlands of Saudi Arabia — five residences set among stone, shadow and silence.">
+    <link rel="icon" type="image/png" href="images/icon.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header class="header">
+        <div class="wrap">
+            <a href="index.html" class="logo-link">
+                <svg class="logo" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
+                    <path d="M24 6c-10 0-16 10-16 22v10h32V28C40 16 34 6 24 6z" fill="none" stroke="currentColor" stroke-width="1.6"/>
+                    <line x1="4" y1="38" x2="44" y2="38" stroke="currentColor" stroke-width="1.6"/>
+                </svg>
+                <span class="wordmark">Sukoon</span>
+            </a>
+            <nav class="main-nav">
+                <a href="index.html">Residences</a>
+                <a href="login.html" id="login-link" class="login-button">Login</a>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <section class="hero">
+            <img src="images/resort/hero.jpg" alt="A guest walks beside a still reflecting pool at Sukoon, framed by minimal desert architecture" class="hero-image">
+            <div class="hero-content">
+                <span class="eyebrow">AlUla Desert Highlands · Saudi Arabia</span>
+                <h1>Sukoon</h1>
+                <p>A private resort of five residences, set low in the dunes where the only sound left is your own.</p>
+            </div>
+        </section>
+
+        <section class="philosophy">
+            <div class="wrap">
+                <span class="eyebrow">The Philosophy</span>
+                <h2>Stillness is the true luxury.</h2>
+                <p>Sukoon — Arabic for stillness — sits low in the desert highlands of AlUla, where sound gives way to
+                    silence and the horizon becomes the only view that matters. Each residence is shaped by shadow,
+                    stone and the slow rhythm of desert light, built not to impress but to disappear into its
+                    surroundings.</p>
+            </div>
+        </section>
+
+        <section class="editorial" id="residences">
+            <div class="wrap">
+                <div class="residences-intro">
+                    <div>
+                        <span class="eyebrow">The Residences</span>
+                        <h2>Five ways to be still</h2>
+                    </div>
+                    <div id="filter" class="filter">
+                        <label for="price-filter">Nightly Rate</label>
+                        <select id="price-filter">
+                            <option value="1000">Up to $1,000</option>
+                            <option value="1500">Up to $1,500</option>
+                            <option value="2000">Up to $2,000</option>
+                            <option value="3000">Up to $3,000</option>
+                            <option value="all" selected>All Rates</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div id="places-list" class="places-list">
+                    <article class="place-card" data-price="980">
+                        <div class="place-card-image">
+                            <img src="images/resort/desert-pavilion.jpg" alt="Desert Pavilion, a minimal concrete residence set against the dunes">
+                        </div>
+                        <div class="place-card-body">
+                            <span class="eyebrow">01 — Pavilion</span>
+                            <h2>Desert Pavilion</h2>
+                            <p class="place-tagline">Set low into the dune, wrapped in shadow and raw plaster.</p>
+                            <p class="place-price">Price per night: <strong>$980</strong></p>
+                            <a href="place.html?id=desert-pavilion" class="details-button">View Details</a>
+                        </div>
+                    </article>
+
+                    <article class="place-card" data-price="860">
+                        <div class="place-card-image">
+                            <img src="images/resort/garden-villa.jpg" alt="Garden Villa courtyard with stone pines against a pale wall">
+                        </div>
+                        <div class="place-card-body">
+                            <span class="eyebrow">02 — Villa</span>
+                            <h2>Garden Villa</h2>
+                            <p class="place-tagline">A private courtyard among stone pines and still air.</p>
+                            <p class="place-price">Price per night: <strong>$860</strong></p>
+                            <a href="place.html?id=garden-villa" class="details-button">View Details</a>
+                        </div>
+                    </article>
+
+                    <article class="place-card" data-price="1450">
+                        <div class="place-card-image">
+                            <img src="images/resort/pool-villa.jpg" alt="Private Pool Villa infinity edge meeting the horizon">
+                        </div>
+                        <div class="place-card-body">
+                            <span class="eyebrow">03 — Pool Villa</span>
+                            <h2>Private Pool Villa</h2>
+                            <p class="place-tagline">An infinity edge that dissolves into the horizon.</p>
+                            <p class="place-price">Price per night: <strong>$1,450</strong></p>
+                            <a href="place.html?id=pool-villa" class="details-button">View Details</a>
+                        </div>
+                    </article>
+
+                    <article class="place-card" data-price="1120">
+                        <div class="place-card-image">
+                            <img src="images/resort/mountain-suite.jpg" alt="Mountain Suite view over the AlUla highlands at dusk">
+                        </div>
+                        <div class="place-card-body">
+                            <span class="eyebrow">04 — Suite</span>
+                            <h2>Mountain Suite</h2>
+                            <p class="place-tagline">Perched above the highlands, facing dusk over stone.</p>
+                            <p class="place-price">Price per night: <strong>$1,120</strong></p>
+                            <a href="place.html?id=mountain-suite" class="details-button">View Details</a>
+                        </div>
+                    </article>
+
+                    <article class="place-card" data-price="2600">
+                        <div class="place-card-image">
+                            <img src="images/resort/royal-residence.jpg" alt="Royal Residence arched interior lounge in warm neutral tones">
+                        </div>
+                        <div class="place-card-body">
+                            <span class="eyebrow">05 — Residence</span>
+                            <h2>Royal Residence</h2>
+                            <p class="place-tagline">The resort's signature address — arches, stone and quiet.</p>
+                            <p class="place-price">Price per night: <strong>$2,600</strong></p>
+                            <a href="place.html?id=royal-residence" class="details-button">View Details</a>
+                        </div>
+                    </article>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="wrap">
+            <div class="footer-brand">
+                <a href="index.html" class="logo-link">
+                    <svg class="logo" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
+                        <path d="M24 6c-10 0-16 10-16 22v10h32V28C40 16 34 6 24 6z" fill="none" stroke="currentColor" stroke-width="1.6"/>
+                        <line x1="4" y1="38" x2="44" y2="38" stroke="currentColor" stroke-width="1.6"/>
+                    </svg>
+                    <span class="wordmark">Sukoon</span>
+                </a>
+                <p>A private desert resort in the AlUla highlands of Saudi Arabia — five residences, one horizon.</p>
+            </div>
+            <nav class="footer-nav">
+                <a href="index.html">Residences</a>
+                <a href="login.html">Login</a>
+            </nav>
+        </div>
+        <div class="footer-bottom">
+            <div class="wrap">
+                <span>&copy; 2026 Sukoon Desert Resort. All rights reserved.</span>
+                <span>AlUla, Kingdom of Saudi Arabia</span>
+            </div>
+        </div>
+    </footer>
+
+    <script src="scripts.js"></script>
+</body>
+</html>

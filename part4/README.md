@@ -1,107 +1,57 @@
-# HBnB - Simple Web Client
+### Part 4 - Simple Web Client
 
-## Overview
+In this phase, you'll be focusing on the front-end development of your application using HTML5, CSS3, and JavaScript ES6. Your task is to design and implement an interactive user interface that connects with the back-end services you have developed in previous parts of the project.
 
-Part 4 focuses on developing a simple web client for the HBnB application using HTML5, CSS3, and JavaScript ES6.
+#### Objectives
 
-The client connects to the HBnB REST API developed in the previous phases and provides an interactive user interface for authentication, browsing places, viewing place details, and adding reviews.
+- Develop a user-friendly interface following provided design specifications.
+- Implement client-side functionality to interact with the back-end API.
+- Ensure secure and efficient data handling using JavaScript.
+- Apply modern web development practices to create a dynamic web application.
 
-## Objectives
+#### Learning Goals
 
-- Develop a user-friendly web interface following the provided design.
-- Implement client-side functionality using JavaScript ES6.
-- Connect the web client to the HBnB REST API.
-- Implement JWT authentication and session management.
-- Store the JWT token in a cookie.
-- Display and filter places.
-- Display detailed place information.
-- Allow authenticated users to add reviews.
-- Use Fetch/AJAX to communicate with the backend API.
-- Handle authentication and CORS.
+- Understand and apply HTML5, CSS3, and JavaScript ES6 in a real-world project.
+- Learn to interact with back-end services using AJAX/Fetch API.
+- Implement authentication mechanisms and manage user sessions.
+- Use client-side scripting to enhance user experience without page reloads.
 
-## Technologies
+#### Tasks Breakdown
 
-- HTML5
-- CSS3
-- JavaScript ES6
-- Fetch API
-- REST API
-- JWT Authentication
-- Cookies
+1. **Design (Task 1)**
+   - Complete provided HTML and CSS files to match the given design specifications.
+   - Create pages for Login, List of Places, Place Details, and Add Review.
 
-## Tasks
+2. **Login (Task 2)**
+   - Implement login functionality using the back-end API.
+   - Store the JWT token returned by the API in a cookie for session management.
 
-### Task 0 - Design
+3. **List of Places (Task 3)**
+   - Implement the main page to display a list of all places.
+   - Fetch places data from the API and implement client-side filtering based on country selection.
+   - Ensure the page redirects to the login page if the user is not authenticated.
 
-Complete the provided HTML and CSS files according to the design specifications.
+4. **Place Details (Task 4)**
+   - Implement the detailed view of a place.
+   - Fetch place details from the API using the place ID.
+   - Provide access to the add review form if the user is authenticated.
 
-Create the following pages:
+5. **Add Review (Task 5)**
+   - Implement the form to add a review for a place.
+   - Ensure the form is accessible only to authenticated users, redirecting others to the index page.
 
-- Login
-- List of Places
-- Place Details
-- Add Review
+> [!WARNING]
+> When testing your client against yout API you'll probably get a Cross-Origin Resource Sharing (CORS) error. You'll need to modify your API code to allow your client to fetch data from the API.
+> Read [this article](https://medium.com/@mterrano1/cors-in-a-flask-api-38051388f8cc) for a depper understanding about CORS and how to configure your Flask API
 
-### Task 1 - Login
+#### Resources
 
-Implement login functionality using the backend API.
+- [HTML5 Documentation](https://developer.mozilla.org/en-US/docs/Web/Guide/HTML/HTML5)
+- [CSS3 Documentation](https://developer.mozilla.org/en-US/docs/Web/CSS/CSS3)
+- [JavaScript ES6 Features](https://developer.mozilla.org/en-US/docs/Web/JavaScript/New_in_JavaScript/ECMAScript_2015)
+- [Fetch API](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API)
+- [Responsive Web Design Basics](https://web.dev/responsive-web-design-basics/)
+- [Handling Cookies in JavaScript](https://developer.mozilla.org/en-US/docs/Web/API/Document/cookie)
+- [Client-Side Form Validation](https://developer.mozilla.org/en-US/docs/Learn/Forms/Form_validation)
 
-The JWT token returned by the API is stored in a cookie for session management.
-
-### Task 2 - List of Places
-
-Implement the main page to:
-
-- Display a list of all places.
-- Fetch places from the API.
-- Filter places on the client side based on country selection.
-- Redirect unauthenticated users to the login page when required.
-
-### Task 3 - Place Details
-
-Implement the detailed view of a place.
-
-The page should:
-
-- Fetch place details using the place ID.
-- Display the place information.
-- Provide access to the Add Review form for authenticated users.
-
-### Task 4 - Add Review
-
-Implement a form to add a review for a place.
-
-The form should only be accessible to authenticated users. Unauthenticated users should be redirected to the index page.
-
-## Testing
-
-The application should be tested to verify:
-
-- Successful and failed login.
-- JWT cookie creation.
-- Places are retrieved from the API.
-- Client-side filtering works correctly.
-- Place details are displayed correctly.
-- Authenticated users can access the review form.
-- Unauthenticated users are redirected correctly.
-- Reviews can be submitted successfully.
-- API errors are handled correctly.
-
-## Technologies
-
-- HTML5
-- CSS3
-- JavaScript ES6
-- Fetch API
-- REST API
-- JWT Authentication
-
-## Team Members
-
-- Razan Kashr
-- Reema Almujalli
-- Jouri AlSulaiman
-
-## Goal
-
-The goal of this phase is to build an interactive web client that connects the HBnB front-end with the existing REST API while providing authentication, place browsing, place details, and review functionality.
+---

@@ -1,0 +1,811 @@
+/*
+  Sukoon — A Private Desert Resort
+  AlUla Highlands, Kingdom of Saudi Arabia
+
+  Part 4 / Task 0 — Design
+  A fictional luxury resort reskin of the HBnB assignment.
+  Required structure, classes and fixed spacing values are preserved
+  throughout (see the "Fixed card parameters" block below).
+*/
+
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=Jost:ital,wght@0,300;0,400;0,500;1,400&display=swap');
+
+:root {
+    /* Palette — cream / sand / stone / charcoal, muted brass accent */
+    --color-bg: #f6f1e7;
+    --color-bg-alt: #efe6d6;
+    --color-surface: #fffcf6;
+    --color-ink: #2a251f;
+    --color-ink-soft: #6b6255;
+    --color-line: #ddd;                 /* required exact value for cards */
+    --color-line-soft: rgba(42, 37, 31, 0.14);
+    --color-accent: #9c7a3f;            /* muted brass */
+    --color-accent-deep: #7c5f2e;
+    --color-overlay: rgba(20, 16, 10, 0.38);
+
+    --font-serif: 'Cormorant Garamond', Georgia, 'Times New Roman', serif;
+    --font-sans: 'Jost', 'Helvetica Neue', Arial, sans-serif;
+
+    --container: 1180px;
+    --space-section: clamp(3.5rem, 6vw, 7rem);
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    background-color: var(--color-bg);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    font-weight: 300;
+    line-height: 1.6;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+}
+
+img {
+    max-width: 100%;
+    display: block;
+}
+
+a {
+    color: inherit;
+}
+
+.wrap {
+    max-width: var(--container);
+    margin: 0 auto;
+    padding: 0 clamp(1.25rem, 4vw, 3rem);
+}
+
+h1, h2, h3 {
+    font-family: var(--font-serif);
+    font-weight: 500;
+    line-height: 1.15;
+    color: var(--color-ink);
+}
+
+.eyebrow {
+    display: block;
+    font-family: var(--font-sans);
+    font-size: 0.72rem;
+    font-weight: 500;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--color-accent-deep);
+    margin-bottom: 0.9rem;
+}
+
+/* ---------- Accessibility ---------- */
+
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
+
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+    outline: 1.5px solid var(--color-accent);
+    outline-offset: 3px;
+}
+
+/* ---------- Header ---------- */
+
+.header {
+    background-color: var(--color-bg);
+    border-bottom: 1px solid var(--color-line-soft);
+    position: sticky;
+    top: 0;
+    z-index: 20;
+}
+
+.header .wrap {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-top: 1.15rem;
+    padding-bottom: 1.15rem;
+}
+
+.logo-link {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    text-decoration: none;
+}
+
+.logo {
+    height: 30px;
+    width: 30px;
+    color: var(--color-ink);
+}
+
+.wordmark {
+    font-family: var(--font-sans);
+    font-size: 1rem;
+    font-weight: 500;
+    letter-spacing: 0.32em;
+    text-transform: uppercase;
+    color: var(--color-ink);
+}
+
+.main-nav {
+    display: flex;
+    align-items: center;
+    gap: 2.25rem;
+}
+
+.main-nav a {
+    font-size: 0.8rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    text-decoration: none;
+    color: var(--color-ink-soft);
+    padding-bottom: 0.2rem;
+    border-bottom: 1px solid transparent;
+    transition: color 0.25s ease, border-color 0.25s ease;
+}
+
+.main-nav a:hover {
+    color: var(--color-ink);
+    border-color: var(--color-accent);
+}
+
+.login-button {
+    color: var(--color-ink) !important;
+    border: 1px solid var(--color-ink) !important;
+    padding: 0.55rem 1.3rem;
+    border-radius: 2px;
+}
+
+.login-button:hover {
+    background-color: var(--color-ink);
+    color: var(--color-bg) !important;
+}
+
+/* ---------- Buttons ---------- */
+
+.details-button {
+    display: inline-block;
+    background-color: var(--color-ink);
+    color: var(--color-bg);
+    text-decoration: none;
+    border: 1px solid var(--color-ink);
+    padding: 0.85rem 1.9rem;
+    border-radius: 2px;
+    font-family: var(--font-sans);
+    font-size: 0.75rem;
+    font-weight: 500;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    cursor: pointer;
+    text-align: center;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.details-button:hover {
+    background-color: transparent;
+    color: var(--color-ink);
+}
+
+/* ---------- Hero ---------- */
+
+.hero {
+    position: relative;
+    height: min(88vh, 820px);
+    min-height: 480px;
+    overflow: hidden;
+    color: #fff;
+}
+
+.hero-image {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.hero::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, rgba(20, 16, 10, 0.28) 0%, rgba(20, 16, 10, 0.18) 45%, rgba(20, 16, 10, 0.55) 100%);
+}
+
+.hero-content {
+    position: relative;
+    z-index: 1;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 0 1.5rem;
+}
+
+.hero-content .eyebrow {
+    color: #f1e6cd;
+}
+
+.hero-content h1 {
+    color: #fff;
+    font-size: clamp(2.75rem, 7vw, 5rem);
+    letter-spacing: 0.04em;
+}
+
+.hero-content p {
+    margin-top: 1.25rem;
+    max-width: 34rem;
+    font-size: 1.05rem;
+    font-weight: 300;
+    color: #f3ede0;
+}
+
+/* ---------- Section rhythm ---------- */
+
+section.editorial,
+section.philosophy {
+    padding: var(--space-section) 0;
+}
+
+.philosophy {
+    text-align: center;
+}
+
+.philosophy .wrap {
+    max-width: 46rem;
+}
+
+.philosophy h2 {
+    font-size: clamp(1.8rem, 3.4vw, 2.6rem);
+    margin-bottom: 1.25rem;
+}
+
+.philosophy p {
+    color: var(--color-ink-soft);
+    font-size: 1.05rem;
+}
+
+/* ---------- Filter ---------- */
+
+.residences-intro {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 1.5rem;
+    margin-bottom: 2.75rem;
+}
+
+.residences-intro h2 {
+    font-size: clamp(1.8rem, 3vw, 2.4rem);
+}
+
+.filter {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.filter label {
+    font-size: 0.75rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--color-ink-soft);
+}
+
+.filter select {
+    padding: 0.55rem 0.9rem;
+    border: 1px solid var(--color-line-soft);
+    border-radius: 2px;
+    background-color: var(--color-surface);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    font-size: 0.85rem;
+}
+
+/* ---------- Fixed card parameters (assignment requirement) ----------
+   place-card and review-card MUST keep:
+   margin: 20px | padding: 10px | border: 1px solid #ddd | border-radius: 10px
+------------------------------------------------------------------------ */
+
+.places-list {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.place-card {
+    background-color: var(--color-surface);
+    margin: 20px;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    width: 340px;
+    overflow: hidden;
+    text-decoration: none;
+    color: inherit;
+    display: flex;
+    flex-direction: column;
+    transition: box-shadow 0.35s ease, transform 0.35s ease;
+}
+
+.place-card:hover {
+    box-shadow: 0 18px 34px -18px rgba(42, 37, 31, 0.35);
+    transform: translateY(-3px);
+}
+
+.place-card-image {
+    margin: -10px -10px 0;
+    height: 230px;
+    overflow: hidden;
+}
+
+.place-card-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.6s ease;
+}
+
+.place-card:hover .place-card-image img {
+    transform: scale(1.045);
+}
+
+.place-card-body {
+    padding: 1.4rem 0.7rem 0.9rem;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+}
+
+.place-card-body .eyebrow {
+    margin-bottom: 0.5rem;
+    font-size: 0.65rem;
+}
+
+.place-card h2 {
+    font-size: 1.4rem;
+    margin-bottom: 0.5rem;
+}
+
+.place-tagline {
+    color: var(--color-ink-soft);
+    font-size: 0.9rem;
+    margin-bottom: 1.1rem;
+}
+
+.place-price {
+    font-size: 0.9rem;
+    color: var(--color-ink);
+    margin-bottom: 1.25rem;
+}
+
+.place-price strong {
+    font-family: var(--font-serif);
+    font-size: 1.15rem;
+    font-weight: 600;
+}
+
+.place-card .details-button {
+    align-self: flex-start;
+    margin-top: auto;
+}
+
+/* ---------- Place details (place.html) ---------- */
+
+.place-hero {
+    position: relative;
+    height: min(60vh, 560px);
+    min-height: 340px;
+    overflow: hidden;
+    color: #fff;
+}
+
+.place-hero-image {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.place-hero::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, rgba(20, 16, 10, 0.15) 0%, rgba(20, 16, 10, 0.55) 100%);
+}
+
+.place-hero-content {
+    position: relative;
+    z-index: 1;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-end;
+    text-align: center;
+    padding: 0 1.5rem 3rem;
+}
+
+.place-hero-content .eyebrow {
+    color: #f1e6cd;
+}
+
+.place-hero-content h1 {
+    color: #fff;
+    font-size: clamp(2.2rem, 5vw, 3.4rem);
+}
+
+.place-hero-content .place-location {
+    margin-top: 0.6rem;
+    font-size: 0.85rem;
+    letter-spacing: 0.08em;
+    color: #efe6d6;
+}
+
+main.place-main {
+    flex: 1;
+}
+
+.place-details {
+    max-width: 46rem;
+    margin: 3.5rem auto 20px;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    background-color: var(--color-surface);
+}
+
+.place-info {
+    padding: 2.25rem clamp(1.25rem, 4vw, 3rem);
+    text-align: center;
+}
+
+.place-info p {
+    margin-bottom: 1rem;
+    font-size: 0.98rem;
+}
+
+.place-info p:last-child {
+    margin-bottom: 0;
+}
+
+.place-info .field-label {
+    font-family: var(--font-sans);
+    font-size: 0.7rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--color-accent-deep);
+    display: block;
+    margin-bottom: 0.3rem;
+}
+
+.place-description {
+    max-width: 38rem;
+    margin: 0 auto 1.5rem;
+    color: var(--color-ink-soft);
+    line-height: 1.75;
+}
+
+.amenities-list {
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 1.75rem;
+    margin-top: 0.5rem;
+}
+
+.amenities-list li {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.88rem;
+    color: var(--color-ink);
+}
+
+.amenity-icon {
+    height: 18px;
+    width: 18px;
+    opacity: 0.75;
+}
+
+/* ---------- Reviews (place.html) ---------- */
+
+.reviews-section {
+    max-width: 46rem;
+    margin: 0 auto;
+    padding: 1rem clamp(1.25rem, 4vw, 3rem) 0;
+}
+
+.reviews-section > h2 {
+    font-size: 1.6rem;
+    margin-bottom: 0.5rem;
+}
+
+.reviews-list {
+    display: flex;
+    flex-direction: column;
+}
+
+.review-card {
+    background-color: var(--color-surface);
+    margin: 20px;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+}
+
+.review-card-body {
+    padding: 1.1rem 1.2rem;
+}
+
+.review-author {
+    font-size: 1rem;
+    margin-bottom: 0.35rem;
+    font-weight: 500;
+}
+
+.review-comment {
+    color: var(--color-ink-soft);
+    margin-bottom: 0.6rem;
+    font-style: italic;
+}
+
+.review-rating {
+    font-size: 0.85rem;
+    letter-spacing: 0.05em;
+    color: var(--color-accent-deep);
+}
+
+/* ---------- Add review section / button (place.html) ---------- */
+
+.add-review {
+    max-width: 46rem;
+    margin: 2.5rem auto 0;
+    padding: 0 clamp(1.25rem, 4vw, 3rem);
+    text-align: center;
+}
+
+/* ---------- Forms (login.html / add_review.html) ---------- */
+
+.page-heading {
+    text-align: center;
+    padding: var(--space-section) 1.5rem 0;
+}
+
+.page-heading .eyebrow {
+    display: inline-block;
+}
+
+.page-heading h1 {
+    font-size: clamp(2rem, 4vw, 2.75rem);
+}
+
+.login-section,
+.add-review-section {
+    display: flex;
+    justify-content: center;
+    padding: 3rem 1.25rem var(--space-section);
+    flex: 1;
+}
+
+.form {
+    background-color: var(--color-surface);
+    width: 100%;
+    max-width: 440px;
+    margin: 20px auto;
+    padding: 2.25rem clamp(1.5rem, 4vw, 2.75rem);
+    border: 1px solid var(--color-line-soft);
+    border-radius: 2px;
+    display: flex;
+    flex-direction: column;
+    gap: 1.1rem;
+}
+
+.form h2 {
+    text-align: center;
+    font-size: 1.6rem;
+    margin-bottom: 0.25rem;
+}
+
+.form .form-sub {
+    text-align: center;
+    color: var(--color-ink-soft);
+    font-size: 0.88rem;
+    margin-bottom: 0.5rem;
+}
+
+.form label {
+    font-size: 0.72rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--color-ink-soft);
+}
+
+.form input,
+.form textarea,
+.form select {
+    width: 100%;
+    padding: 0.7rem 0.85rem;
+    border: 1px solid var(--color-line-soft);
+    border-radius: 2px;
+    background-color: var(--color-bg);
+    font-family: var(--font-sans);
+    font-size: 0.95rem;
+    color: var(--color-ink);
+}
+
+.form textarea {
+    resize: vertical;
+    min-height: 140px;
+}
+
+.form button {
+    margin-top: 0.4rem;
+}
+
+.error-message {
+    color: #8a3b2c;
+    background-color: #f6e6df;
+    border: 1px solid #e3c3b3;
+    border-radius: 2px;
+    padding: 0.6rem 0.8rem;
+    text-align: center;
+    font-size: 0.85rem;
+}
+
+.success-message {
+    color: #4c5a3a;
+    background-color: #eef0e3;
+    border: 1px solid #ccd3b8;
+    border-radius: 2px;
+    padding: 0.6rem 0.8rem;
+    text-align: center;
+    font-size: 0.85rem;
+}
+
+/* ---------- Footer ---------- */
+
+.footer {
+    background-color: var(--color-ink);
+    color: var(--color-bg-alt);
+    margin-top: auto;
+}
+
+.footer .wrap {
+    padding: 3rem clamp(1.25rem, 4vw, 3rem) 2.25rem;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 2rem;
+}
+
+.footer-brand {
+    max-width: 22rem;
+}
+
+.footer-brand .logo-link {
+    margin-bottom: 0.9rem;
+}
+
+.footer-brand .logo,
+.footer-brand .wordmark {
+    color: var(--color-bg-alt);
+}
+
+.footer-brand p {
+    color: rgba(246, 241, 231, 0.62);
+    font-size: 0.85rem;
+    line-height: 1.7;
+}
+
+.footer-nav {
+    display: flex;
+    gap: 2.5rem;
+}
+
+.footer-nav a {
+    text-decoration: none;
+    font-size: 0.8rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: rgba(246, 241, 231, 0.75);
+}
+
+.footer-nav a:hover {
+    color: #fff;
+}
+
+.footer-bottom {
+    border-top: 1px solid rgba(246, 241, 231, 0.14);
+}
+
+.footer-bottom .wrap {
+    padding-top: 1.25rem;
+    padding-bottom: 1.25rem;
+    font-size: 0.75rem;
+    letter-spacing: 0.04em;
+    color: rgba(246, 241, 231, 0.55);
+    justify-content: space-between;
+}
+
+/* ---------- Responsive ---------- */
+
+@media (max-width: 720px) {
+    .header .wrap {
+        flex-wrap: wrap;
+        row-gap: 0.75rem;
+    }
+
+    .main-nav {
+        gap: 1.25rem;
+    }
+
+    .wordmark {
+        letter-spacing: 0.18em;
+        font-size: 0.9rem;
+    }
+
+    .main-nav {
+        gap: 0.9rem;
+    }
+
+    .main-nav a:not(.login-button) {
+        font-size: 0.72rem;
+    }
+
+    .login-button {
+        padding: 0.5rem 1rem;
+    }
+
+    .residences-intro {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .place-card {
+        width: 100%;
+        max-width: 380px;
+    }
+
+    .footer .wrap {
+        flex-direction: column;
+    }
+
+    .footer-bottom .wrap {
+        flex-direction: row;
+        flex-wrap: wrap;
+    }
+}
+
+@media (max-width: 480px) {
+    .amenities-list {
+        flex-direction: column;
+        align-items: center;
+        gap: 0.85rem;
+    }
+}
