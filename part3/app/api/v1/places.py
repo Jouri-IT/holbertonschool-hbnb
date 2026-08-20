@@ -74,6 +74,8 @@ def place_summary(place):
     return {
         'id': place.id,
         'title': place.title,
+        'description': place.description,
+        'price': place.price,
         'latitude': place.latitude,
         'longitude': place.longitude,
     }
@@ -94,15 +96,13 @@ def place_created(place):
 def serialize_place(place):
     """Build the full place representation for a single-place GET.
 
-    place.owner/place.reviews are same-request-only convenience
-    attributes (no db.ForeignKey/relationship() yet -- that's the
-    next task), so a place fetched fresh in a later request won't
-    have them. owner and reviews are instead looked up fresh through
-    the facade by the persisted owner_id/place.id; amenities has no
-    persisted association yet at all, so it's read from the
-    in-memory attribute (only accurate within the request that
-    created/updated it) until the relationships task adds the join
-    table.
+    owner and reviews are looked up fresh through the facade by the
+    persisted owner_id/place.id rather than via the SQLAlchemy
+    relationships directly, so this stays correct regardless of what
+    is or isn't eagerly loaded on the passed-in place instance.
+    amenities are read straight off place.amenities -- a real
+    persisted many-to-many (see the place_amenity table in
+    models/place.py), so this reflects the current DB state.
     """
     data = place.to_dict()
 
@@ -122,12 +122,21 @@ def serialize_place(place):
         for a in getattr(place, 'amenities', [])
     ]
 
+    def _review_author(user_id):
+        user = facade.get_user(user_id)
+        return {
+            'id': user.id,
+            'first_name': user.first_name,
+            'last_name': user.last_name,
+        } if user else None
+
     data['reviews'] = [
         {
             'id': r.id,
             'text': r.text,
             'rating': r.rating,
             'user_id': r.user_id,
+            'user': _review_author(r.user_id),
         }
         for r in facade.get_reviews_by_place(place.id)
     ]

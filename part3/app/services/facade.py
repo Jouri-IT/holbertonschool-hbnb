@@ -159,15 +159,29 @@ class HBnBFacade:
         amenity_ids = place_data_copy.pop('amenities', [])
         place_data_copy['owner'] = owner
 
-        place = Place(**place_data_copy)
-
+        # Resolved and validated before anything is persisted, so an
+        # invalid amenity id raises with no place row left half-created.
+        amenities = []
         for amenity_id in amenity_ids:
             amenity = self.amenity_repo.get(amenity_id)
             if not amenity:
                 raise ValueError(f"Amenity {amenity_id} does not exist")
+            amenities.append(amenity)
+
+        place = Place(**place_data_copy)
+
+        # place must be added (and committed, giving it a real PK)
+        # before place.amenities.append() below -- on a transient,
+        # not-yet-in-session place that append silently fails to
+        # persist the place_amenity association row.
+        self.place_repo.add(place)
+
+        for amenity in amenities:
             place.add_amenity(amenity)
 
-        self.place_repo.add(place)
+        if amenities:
+            self.place_repo.add(place)
+
         return place
 
     def get_place(self, place_id):
